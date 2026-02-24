@@ -26,6 +26,7 @@ void main() {
         recorder: mockRecorder,
         audioPlayer: mockPlayer,
         loadSavedVoicesOnInit: false,
+        loadStudioSettingsOnInit: false,
       );
     });
 

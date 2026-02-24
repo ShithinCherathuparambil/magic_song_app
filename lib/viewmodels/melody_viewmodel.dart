@@ -32,6 +32,8 @@ class ProcessedVersion {
 }
 
 class MelodyViewModel extends ChangeNotifier {
+  static const int _maxProcessedVersions = 12;
+
   final AudioRecorder audioRecorder;
   final AudioPlayer player;
 
@@ -90,7 +92,7 @@ class MelodyViewModel extends ChangeNotifier {
       return 'Step 1/3: Record your dry voice.';
     }
     if (!hasProcessedRecording || _hasUnappliedAudioChanges) {
-      return 'Step 2/3: Tap Apply Effect.';
+      return 'Step 2/3: Tune preset/EQ. Effect auto-applies.';
     }
     return 'Step 3/3: Choose Dry/Processed and tap Play.';
   }
@@ -112,6 +114,7 @@ class MelodyViewModel extends ChangeNotifier {
 
   Timer? _amplitudeTimer;
   Timer? _autoApplyTimer;
+  Timer? _settingsPersistTimer;
   bool _autoApplyInProgress = false;
   bool _autoApplyQueued = false;
   final List<double> _amplitudes = [];
@@ -122,10 +125,14 @@ class MelodyViewModel extends ChangeNotifier {
     AudioRecorder? recorder,
     AudioPlayer? audioPlayer,
     bool loadSavedVoicesOnInit = true,
+    bool loadStudioSettingsOnInit = true,
   }) : audioRecorder = recorder ?? AudioRecorder(),
        player = audioPlayer ?? AudioPlayer() {
     if (loadSavedVoicesOnInit) {
       unawaited(_loadSavedVoices());
+    }
+    if (loadStudioSettingsOnInit) {
+      unawaited(_loadStudioSettings());
     }
     player.playerStateStream.listen((state) {
       if (state.processingState == ProcessingState.completed) {
@@ -142,6 +149,7 @@ class MelodyViewModel extends ChangeNotifier {
   void dispose() {
     _amplitudeTimer?.cancel();
     _autoApplyTimer?.cancel();
+    _settingsPersistTimer?.cancel();
     audioRecorder.dispose();
     player.dispose();
     super.dispose();
@@ -226,6 +234,24 @@ class MelodyViewModel extends ChangeNotifier {
         _eqTreble = 3.0;
         _reverb = 0.4;
         break;
+      case VocalPreset.modernIndie:
+        _eqBass = -3.0;
+        _eqMid = 3.0;
+        _eqTreble = 4.0;
+        _reverb = 0.3;
+        break;
+      case VocalPreset.cinematic:
+        _eqBass = 2.0;
+        _eqMid = 3.0;
+        _eqTreble = 5.0;
+        _reverb = 0.7;
+        break;
+      case VocalPreset.airyVocal:
+        _eqBass = -2.0;
+        _eqMid = 2.0;
+        _eqTreble = 4.0;
+        _reverb = 0.35;
+        break;
       case VocalPreset.podcast:
         _eqBass = 3.0;
         _eqMid = 1.5;
@@ -250,6 +276,7 @@ class MelodyViewModel extends ChangeNotifier {
       _statusText = 'Preset switched to ${_presetName(preset)}.';
     }
     _markProcessingDirty();
+    _scheduleSettingsPersist();
     notifyListeners();
   }
 
@@ -264,30 +291,35 @@ class MelodyViewModel extends ChangeNotifier {
       setPreset(_selectedPreset);
     }
     _markProcessingDirty();
+    _scheduleSettingsPersist();
     notifyListeners();
   }
 
   void setEqBass(double val) {
     _eqBass = val;
     _markProcessingDirty();
+    _scheduleSettingsPersist();
     notifyListeners();
   }
 
   void setEqMid(double val) {
     _eqMid = val;
     _markProcessingDirty();
+    _scheduleSettingsPersist();
     notifyListeners();
   }
 
   void setEqTreble(double val) {
     _eqTreble = val;
     _markProcessingDirty();
+    _scheduleSettingsPersist();
     notifyListeners();
   }
 
   void setReverb(double val) {
     _reverb = val;
     _markProcessingDirty();
+    _scheduleSettingsPersist();
     notifyListeners();
   }
 
@@ -306,6 +338,12 @@ class MelodyViewModel extends ChangeNotifier {
         return 'Bright Lead';
       case VocalPreset.indieMalayalam:
         return 'Warm Indie';
+      case VocalPreset.modernIndie:
+        return 'Modern Indie';
+      case VocalPreset.cinematic:
+        return 'Cinematic';
+      case VocalPreset.airyVocal:
+        return 'Airy Vocal';
       case VocalPreset.podcast:
         return 'Podcast';
       case VocalPreset.cathedral:
@@ -342,6 +380,7 @@ class MelodyViewModel extends ChangeNotifier {
       path: outputPath,
     );
 
+    await _cleanupProcessedArtifacts();
     _rawRecordingPath = outputPath;
     _processedRecordingPath = null;
     _activeProcessedPath = null;
@@ -415,6 +454,12 @@ class MelodyViewModel extends ChangeNotifier {
           comp =
               'acompressor=threshold=-20dB:ratio=3.0:attack=25:release=100:knee=2.8';
           break;
+        case VocalPreset.modernIndie:
+          return 'highpass=f=80,equalizer=f=250:t=q:w=1:g=-3,equalizer=f=4000:t=q:w=1:g=3,equalizer=f=12000:t=q:w=1:g=4,acompressor=threshold=-18dB:ratio=3:attack=20:release=100:makeup=4,aecho=0.7:0.6:40|80:0.12|0.08,alimiter=limit=-1dB';
+        case VocalPreset.cinematic:
+          return 'highpass=f=70,equalizer=f=200:t=q:w=1:g=2,equalizer=f=3000:t=q:w=1:g=3,equalizer=f=11000:t=q:w=1:g=5,acompressor=threshold=-22dB:ratio=3.5:attack=15:release=150:makeup=5,asplit[dry][wet];[wet]aecho=0.8:0.7:80|160:0.35|0.25[rev];[dry][rev]amix=inputs=2:weights=1 0.5,alimiter=limit=-1dB';
+        case VocalPreset.airyVocal:
+          return 'highpass=f=80,equalizer=f=200:t=q:w=1:g=-2,equalizer=f=3000:t=q:w=1:g=2,equalizer=f=12000:t=q:w=1:g=4,acompressor=threshold=-20dB:ratio=3:attack=20:release=120:makeup=4,asplit[wet][dry];[wet]aecho=0.8:0.6:50|100:0.2|0.15[reverb];[dry][reverb]amix=inputs=2:weights=1 0.4,alimiter=limit=-1dB';
         case VocalPreset.podcast:
           hpLp = 'highpass=f=80,lowpass=f=12000';
           comp = 'acompressor=threshold=-20dB:ratio=4.0:attack=2:release=50';
@@ -574,6 +619,7 @@ class MelodyViewModel extends ChangeNotifier {
     } else {
       _statusText = 'Playback source set to processed recording.';
     }
+    _scheduleSettingsPersist();
     notifyListeners();
   }
 
@@ -627,6 +673,8 @@ class MelodyViewModel extends ChangeNotifier {
       return false;
     }
 
+    final previousProcessedPath = _processedRecordingPath;
+    final previousActivePath = _activeProcessedPath;
     final version = ProcessedVersion(
       path: processedPath,
       label: '${_buildProfileLabel()} ${_formatTime(now)}',
@@ -634,6 +682,7 @@ class MelodyViewModel extends ChangeNotifier {
     );
     if (addToProcessedVersions) {
       _processedVersions.insert(0, version);
+      _trimProcessedVersions();
     }
     _processedRecordingPath = processedPath;
     _activeProcessedPath = processedPath;
@@ -643,6 +692,11 @@ class MelodyViewModel extends ChangeNotifier {
     _statusText = addToProcessedVersions
         ? '$statusPrefix and saved as ${version.label}.'
         : '$statusPrefix instantly.';
+    await _deleteFileIfDisposable(
+      previousProcessedPath,
+      retain: {processedPath},
+    );
+    await _deleteFileIfDisposable(previousActivePath, retain: {processedPath});
     notifyListeners();
     return true;
   }
@@ -700,6 +754,7 @@ class MelodyViewModel extends ChangeNotifier {
     _savedVoices.insert(0, savedVoice);
     await _persistSavedVoices();
     _statusText = 'Saved voice with selected effect.';
+    _scheduleSettingsPersist();
     notifyListeners();
   }
 
@@ -770,6 +825,142 @@ class MelodyViewModel extends ChangeNotifier {
     await _persistSavedVoices();
     _statusText = 'Saved voice deleted.';
     notifyListeners();
+  }
+
+  Future<void> resetCurrentSession() async {
+    if (_isPlaying) {
+      await stopPlayback();
+    }
+
+    if (_recordingState == RecordingState.recording) {
+      try {
+        await audioRecorder.stop();
+      } catch (_) {
+        // Ignore recorder stop errors during reset.
+      }
+    }
+
+    await _cleanupProcessedArtifacts();
+    _rawRecordingPath = null;
+    _processedRecordingPath = null;
+    _activeProcessedPath = null;
+    _currentPlaybackPath = null;
+    _lastProcessedProfileSignature = null;
+    _hasUnappliedAudioChanges = false;
+    _processedVersions.clear();
+    _recordingState = RecordingState.idle;
+    _statusText = 'Session reset. Ready for a new recording.';
+    notifyListeners();
+  }
+
+  void _trimProcessedVersions() {
+    while (_processedVersions.length > _maxProcessedVersions) {
+      final removed = _processedVersions.removeLast();
+      unawaited(_deleteFileIfDisposable(removed.path));
+    }
+  }
+
+  Future<void> _cleanupProcessedArtifacts() async {
+    final candidates = <String>{
+      ?_processedRecordingPath,
+      ?_activeProcessedPath,
+      ..._processedVersions.map((e) => e.path),
+    };
+    for (final path in candidates) {
+      final isSaved = _savedVoices.any((voice) => voice.path == path);
+      if (isSaved) {
+        continue;
+      }
+      final file = File(path);
+      if (file.existsSync()) {
+        try {
+          await file.delete();
+        } catch (_) {
+          // Ignore cleanup failures.
+        }
+      }
+    }
+  }
+
+  Future<void> _deleteFileIfDisposable(
+    String? path, {
+    Set<String> retain = const {},
+  }) async {
+    if (path == null || retain.contains(path)) {
+      return;
+    }
+    final isSaved = _savedVoices.any((voice) => voice.path == path);
+    final isInProcessedList = _processedVersions.any(
+      (version) => version.path == path,
+    );
+    final isCurrentActive = _activeProcessedPath == path;
+    if (isSaved || isInProcessedList || isCurrentActive) {
+      return;
+    }
+    final file = File(path);
+    if (!file.existsSync()) {
+      return;
+    }
+    try {
+      await file.delete();
+    } catch (_) {
+      // Ignore cleanup failures.
+    }
+  }
+
+  void _scheduleSettingsPersist() {
+    _settingsPersistTimer?.cancel();
+    _settingsPersistTimer = Timer(const Duration(milliseconds: 250), () {
+      unawaited(_persistStudioSettings());
+    });
+  }
+
+  Future<void> _loadStudioSettings() async {
+    final appDir = await getApplicationDocumentsDirectory();
+    final jsonFile = File(p.join(appDir.path, 'studio_settings.json'));
+    if (!jsonFile.existsSync()) {
+      return;
+    }
+    try {
+      final rawText = await jsonFile.readAsString();
+      final decoded = jsonDecode(rawText) as Map<String, dynamic>;
+
+      final presetName = decoded['selectedPreset'] as String?;
+      final selected = VocalPreset.values.firstWhere(
+        (value) => value.name == presetName,
+        orElse: () => VocalPreset.warmMelody,
+      );
+      _selectedPreset = selected;
+      _isManualMode = decoded['isManualMode'] as bool? ?? false;
+      _eqBass = (decoded['eqBass'] as num?)?.toDouble() ?? _eqBass;
+      _eqMid = (decoded['eqMid'] as num?)?.toDouble() ?? _eqMid;
+      _eqTreble = (decoded['eqTreble'] as num?)?.toDouble() ?? _eqTreble;
+      _reverb = (decoded['reverb'] as num?)?.toDouble() ?? _reverb;
+
+      final sourceRaw = decoded['playbackSource'] as String?;
+      _playbackSource = sourceRaw == PlaybackSource.dry.name
+          ? PlaybackSource.dry
+          : PlaybackSource.processed;
+      _statusText = 'Restored previous preset and EQ settings.';
+      notifyListeners();
+    } catch (_) {
+      // Ignore malformed settings cache.
+    }
+  }
+
+  Future<void> _persistStudioSettings() async {
+    final appDir = await getApplicationDocumentsDirectory();
+    final jsonFile = File(p.join(appDir.path, 'studio_settings.json'));
+    final payload = <String, dynamic>{
+      'selectedPreset': _selectedPreset.name,
+      'isManualMode': _isManualMode,
+      'eqBass': _eqBass,
+      'eqMid': _eqMid,
+      'eqTreble': _eqTreble,
+      'reverb': _reverb,
+      'playbackSource': _playbackSource.name,
+    };
+    await jsonFile.writeAsString(jsonEncode(payload));
   }
 
   Future<void> _loadSavedVoices() async {

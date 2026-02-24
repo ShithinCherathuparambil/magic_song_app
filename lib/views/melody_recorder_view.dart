@@ -43,6 +43,24 @@ const List<PresetData> _availablePresets = [
     icon: Icons.auto_awesome,
   ),
   PresetData(
+    preset: VocalPreset.modernIndie,
+    title: 'Modern Indie',
+    subtitle: 'Crisp + Air',
+    icon: Icons.music_note_rounded,
+  ),
+  PresetData(
+    preset: VocalPreset.cinematic,
+    title: 'Cinematic',
+    subtitle: 'Big Wide Reverb',
+    icon: Icons.movie_filter_rounded,
+  ),
+  PresetData(
+    preset: VocalPreset.airyVocal,
+    title: 'Airy Vocal',
+    subtitle: 'Balanced Studio',
+    icon: Icons.tune_rounded,
+  ),
+  PresetData(
     preset: VocalPreset.podcast,
     title: 'Podcast',
     subtitle: 'Radio Broadcast',
@@ -66,6 +84,7 @@ class _MelodyRecorderViewState extends State<MelodyRecorderView>
     with SingleTickerProviderStateMixin {
   late AnimationController _pulseController;
   late Animation<double> _pulseAnimation;
+  String _lastStatusText = '';
 
   @override
   void initState() {
@@ -106,6 +125,34 @@ class _MelodyRecorderViewState extends State<MelodyRecorderView>
     await provider.togglePlayback();
   }
 
+  void _maybeShowCriticalToast(String statusText) {
+    final lower = statusText.toLowerCase();
+    final isCritical =
+        lower.contains('failed') ||
+        lower.contains('denied') ||
+        lower.contains('required') ||
+        lower.contains('not found') ||
+        lower.contains('missing') ||
+        lower.contains('could not');
+    if (!isCritical || !mounted) {
+      return;
+    }
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) {
+        return;
+      }
+      ScaffoldMessenger.of(context)
+        ..hideCurrentSnackBar()
+        ..showSnackBar(
+          SnackBar(
+            content: Text(statusText),
+            behavior: SnackBarBehavior.floating,
+            duration: const Duration(seconds: 2),
+          ),
+        );
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer<MelodyViewModel>(
@@ -114,8 +161,32 @@ class _MelodyRecorderViewState extends State<MelodyRecorderView>
         final isRecording = provider.recordingState == RecordingState.recording;
         final hasRaw = provider.hasRawRecording;
         final hasProcessed = provider.hasProcessedRecording;
-        final canApply = provider.canApplyEffect;
         final canPlay = provider.canPlaySelectedSource;
+        if (provider.statusText != _lastStatusText) {
+          _lastStatusText = provider.statusText;
+          _maybeShowCriticalToast(provider.statusText);
+        }
+
+        IconData primaryIcon;
+        String primaryLabel;
+        Future<void> Function()? primaryAction;
+        if (isRecording) {
+          primaryIcon = Icons.stop_rounded;
+          primaryLabel = 'Stop Recording';
+          primaryAction = _stopRecordingAndProcess;
+        } else if (!hasRaw) {
+          primaryIcon = Icons.mic_rounded;
+          primaryLabel = 'Start Recording';
+          primaryAction = isBusy ? null : _startRecording;
+        } else if (provider.isPlaying) {
+          primaryIcon = Icons.pause_rounded;
+          primaryLabel = 'Pause';
+          primaryAction = canPlay ? _togglePlayback : null;
+        } else {
+          primaryIcon = Icons.play_arrow_rounded;
+          primaryLabel = 'Play';
+          primaryAction = canPlay ? _togglePlayback : null;
+        }
 
         return Scaffold(
           extendBodyBehindAppBar: true,
@@ -290,77 +361,36 @@ class _MelodyRecorderViewState extends State<MelodyRecorderView>
                             hasRaw: hasRaw,
                             hasProcessed: hasProcessed,
                           ),
-                          SizedBox(height: 48.h),
-                          GestureDetector(
-                            onTap: isBusy
-                                ? null
-                                : isRecording
-                                ? _stopRecordingAndProcess
-                                : _startRecording,
-                            child: AnimatedBuilder(
-                              animation: _pulseAnimation,
-                              builder: (context, child) {
-                                return Transform.scale(
-                                  scale: isRecording
-                                      ? _pulseAnimation.value
-                                      : 1.0,
-                                  child: Container(
-                                    width: 100.w,
-                                    height: 100.w,
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      gradient: LinearGradient(
-                                        colors: isRecording
-                                            ? [
-                                                const Color(0xFFFF3366),
-                                                const Color(0xFFFF6B6B),
-                                              ]
-                                            : [
-                                                const Color(0xFF00FFCC),
-                                                const Color(0xFF00B3FF),
-                                              ],
-                                        begin: Alignment.topLeft,
-                                        end: Alignment.bottomRight,
-                                      ),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: isRecording
-                                              ? const Color(
-                                                  0xFFFF3366,
-                                                ).withValues(alpha: 0.5)
-                                              : const Color(
-                                                  0xFF00FFCC,
-                                                ).withValues(alpha: 0.5),
-                                          blurRadius: 30.r,
-                                          spreadRadius: 5.r,
-                                        ),
-                                      ],
-                                    ),
-                                    child: Icon(
-                                      isRecording
-                                          ? Icons.stop_rounded
-                                          : Icons.mic_rounded,
-                                      size: 48.sp,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                );
-                              },
+                          SizedBox(height: 28.h),
+                          SizedBox(
+                            width: 260.w,
+                            child: FilledButton.icon(
+                              onPressed: primaryAction,
+                              icon: isRecording
+                                  ? AnimatedBuilder(
+                                      animation: _pulseAnimation,
+                                      builder: (context, child) {
+                                        return Transform.scale(
+                                          scale: _pulseAnimation.value,
+                                          child: Icon(primaryIcon),
+                                        );
+                                      },
+                                    )
+                                  : Icon(primaryIcon),
+                              label: Text(primaryLabel),
                             ),
+                          ),
+                          SizedBox(height: 10.h),
+                          Text(
+                            'Effects apply automatically when you change preset or EQ.',
+                            style: TextStyle(
+                              color: Colors.white.withValues(alpha: 0.65),
+                              fontSize: 12.sp,
+                            ),
+                            textAlign: TextAlign.center,
                           ),
                           SizedBox(height: 24.h),
-                          Text(
-                            isRecording
-                                ? 'Tap to Stop Recording'
-                                : 'Tap to Record',
-                            style: TextStyle(
-                              color: Colors.white.withValues(alpha: 0.7),
-                              fontSize: 16.sp,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                          SizedBox(height: 48.h),
-                          // Playback Controls
+                          // Secondary controls
                           AnimatedOpacity(
                             opacity: hasRaw ? 1.0 : 0.5,
                             duration: const Duration(milliseconds: 300),
@@ -413,32 +443,7 @@ class _MelodyRecorderViewState extends State<MelodyRecorderView>
                                     alignment: WrapAlignment.center,
                                     children: [
                                       FilledButton.tonalIcon(
-                                        onPressed: canApply
-                                            ? () =>
-                                                  provider.applyCurrentEffect()
-                                            : null,
-                                        icon: const Icon(Icons.auto_fix_high),
-                                        label: Text(
-                                          hasProcessed
-                                              ? 'Re-Apply Effect'
-                                              : 'Apply Effect',
-                                        ),
-                                      ),
-                                      FilledButton.icon(
-                                        onPressed: canPlay
-                                            ? _togglePlayback
-                                            : null,
-                                        icon: Icon(
-                                          provider.isPlaying
-                                              ? Icons.pause_rounded
-                                              : Icons.play_arrow_rounded,
-                                        ),
-                                        label: Text(
-                                          provider.isPlaying ? 'Pause' : 'Play',
-                                        ),
-                                      ),
-                                      FilledButton.tonalIcon(
-                                        onPressed: canApply
+                                        onPressed: hasRaw
                                             ? () => provider
                                                   .saveVoiceWithSelectedEffect()
                                             : null,
@@ -452,6 +457,62 @@ class _MelodyRecorderViewState extends State<MelodyRecorderView>
                                         icon: const Icon(Icons.share_rounded),
                                         label: const Text('Share'),
                                       ),
+                                      OutlinedButton.icon(
+                                        onPressed: () => Navigator.of(
+                                          context,
+                                        ).pushNamed(AppRoutes.savedVoices),
+                                        icon: const Icon(
+                                          Icons.library_music_rounded,
+                                        ),
+                                        label: const Text('Saved'),
+                                      ),
+                                      OutlinedButton.icon(
+                                        onPressed: hasRaw
+                                            ? () async {
+                                                final shouldReset =
+                                                    await showDialog<bool>(
+                                                      context: context,
+                                                      builder: (dialogContext) {
+                                                        return AlertDialog(
+                                                          title: const Text(
+                                                            'Reset Session',
+                                                          ),
+                                                          content: const Text(
+                                                            'Start a new recording session? Current unsaved recording will be cleared.',
+                                                          ),
+                                                          actions: [
+                                                            TextButton(
+                                                              onPressed: () =>
+                                                                  Navigator.of(
+                                                                    dialogContext,
+                                                                  ).pop(false),
+                                                              child: const Text(
+                                                                'Cancel',
+                                                              ),
+                                                            ),
+                                                            FilledButton(
+                                                              onPressed: () =>
+                                                                  Navigator.of(
+                                                                    dialogContext,
+                                                                  ).pop(true),
+                                                              child: const Text(
+                                                                'Reset',
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        );
+                                                      },
+                                                    ) ??
+                                                    false;
+                                                if (shouldReset) {
+                                                  await provider
+                                                      .resetCurrentSession();
+                                                }
+                                              }
+                                            : null,
+                                        icon: const Icon(Icons.refresh_rounded),
+                                        label: const Text('Reset'),
+                                      ),
                                     ],
                                   ),
                                   SizedBox(height: 10.h),
@@ -461,7 +522,7 @@ class _MelodyRecorderViewState extends State<MelodyRecorderView>
                                         : provider.playbackSource ==
                                                   PlaybackSource.processed &&
                                               !hasProcessed
-                                        ? 'Apply Effect to create processed audio.'
+                                        ? 'Processing... switch to Dry for instant preview.'
                                         : 'Tip: Compare Dry and Processed before sharing.',
                                     style: TextStyle(
                                       color: Colors.white.withValues(
@@ -482,79 +543,125 @@ class _MelodyRecorderViewState extends State<MelodyRecorderView>
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 24.w),
                       child: _GlassCard(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            if (provider.processedVersions.isNotEmpty) ...[
-                              Text(
-                                'Saved Versions',
-                                style: Theme.of(context).textTheme.titleMedium
-                                    ?.copyWith(fontWeight: FontWeight.w600),
+                        child: Theme(
+                          data: Theme.of(
+                            context,
+                          ).copyWith(dividerColor: Colors.transparent),
+                          child: ExpansionTile(
+                            initiallyExpanded: false,
+                            iconColor: Colors.white70,
+                            collapsedIconColor: Colors.white70,
+                            title: Text(
+                              'Advanced EQ & Reverb',
+                              style: Theme.of(context).textTheme.titleMedium
+                                  ?.copyWith(fontWeight: FontWeight.w600),
+                            ),
+                            subtitle: Text(
+                              'Open to fine tune',
+                              style: TextStyle(
+                                color: Colors.white.withValues(alpha: 0.6),
+                                fontSize: 12.sp,
                               ),
-                              SizedBox(height: 10.h),
-                              Wrap(
-                                spacing: 8.w,
-                                runSpacing: 8.h,
-                                children: provider.processedVersions
-                                    .map(
-                                      (version) => ChoiceChip(
-                                        label: Text(
-                                          version.label,
-                                          style: TextStyle(fontSize: 12.sp),
-                                        ),
-                                        selected:
-                                            provider.activeProcessedPath ==
-                                            version.path,
-                                        onSelected: (_) =>
-                                            provider.setActiveProcessedVersion(
-                                              version.path,
-                                            ),
-                                      ),
-                                    )
-                                    .toList(),
+                            ),
+                            children: [
+                              _StudioSlider(
+                                label: 'Bass',
+                                value: provider.eqBass,
+                                min: -10,
+                                max: 10,
+                                onChanged: isBusy || isRecording
+                                    ? null
+                                    : (val) => provider.setEqBass(val),
                               ),
-                              SizedBox(height: 16.h),
+                              _StudioSlider(
+                                label: 'Mid',
+                                value: provider.eqMid,
+                                min: -10,
+                                max: 10,
+                                onChanged: isBusy || isRecording
+                                    ? null
+                                    : (val) => provider.setEqMid(val),
+                              ),
+                              _StudioSlider(
+                                label: 'Treble',
+                                value: provider.eqTreble,
+                                min: -10,
+                                max: 10,
+                                onChanged: isBusy || isRecording
+                                    ? null
+                                    : (val) => provider.setEqTreble(val),
+                              ),
+                              _StudioSlider(
+                                label: 'Studio Reverb',
+                                value: provider.reverb,
+                                min: 0,
+                                max: 1,
+                                onChanged: isBusy || isRecording
+                                    ? null
+                                    : (val) => provider.setReverb(val),
+                              ),
                             ],
-                            _StudioSlider(
-                              label: 'Bass',
-                              value: provider.eqBass,
-                              min: -10,
-                              max: 10,
-                              onChanged: isBusy || isRecording
-                                  ? null
-                                  : (val) => provider.setEqBass(val),
-                            ),
-                            _StudioSlider(
-                              label: 'Mid',
-                              value: provider.eqMid,
-                              min: -10,
-                              max: 10,
-                              onChanged: isBusy || isRecording
-                                  ? null
-                                  : (val) => provider.setEqMid(val),
-                            ),
-                            _StudioSlider(
-                              label: 'Treble',
-                              value: provider.eqTreble,
-                              min: -10,
-                              max: 10,
-                              onChanged: isBusy || isRecording
-                                  ? null
-                                  : (val) => provider.setEqTreble(val),
-                            ),
-                            _StudioSlider(
-                              label: 'Studio Reverb',
-                              value: provider.reverb,
-                              min: 0,
-                              max: 1,
-                              onChanged: isBusy || isRecording
-                                  ? null
-                                  : (val) => provider.setReverb(val),
-                            ),
-                          ],
+                          ),
                         ),
                       ),
                     ),
+                    if (provider.processedVersions.isNotEmpty) ...[
+                      SizedBox(height: 14.h),
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 24.w),
+                        child: _GlassCard(
+                          child: Theme(
+                            data: Theme.of(
+                              context,
+                            ).copyWith(dividerColor: Colors.transparent),
+                            child: ExpansionTile(
+                              initiallyExpanded: false,
+                              iconColor: Colors.white70,
+                              collapsedIconColor: Colors.white70,
+                              title: Text(
+                                'Processed Versions',
+                                style: Theme.of(context).textTheme.titleMedium
+                                    ?.copyWith(fontWeight: FontWeight.w600),
+                              ),
+                              subtitle: Text(
+                                'Select previous snapshots',
+                                style: TextStyle(
+                                  color: Colors.white.withValues(alpha: 0.6),
+                                  fontSize: 12.sp,
+                                ),
+                              ),
+                              children: [
+                                Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Wrap(
+                                    spacing: 8.w,
+                                    runSpacing: 8.h,
+                                    children: provider.processedVersions
+                                        .map(
+                                          (version) => ChoiceChip(
+                                            label: Text(
+                                              version.label,
+                                              style: TextStyle(fontSize: 12.sp),
+                                            ),
+                                            selected:
+                                                provider.activeProcessedPath ==
+                                                version.path,
+                                            onSelected: (_) => provider
+                                                .setActiveProcessedVersion(
+                                                  version.path,
+                                                ),
+                                          ),
+                                        )
+                                        .toList(),
+                                  ),
+                                ),
+                                SizedBox(height: 6.h),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ],
                 ),
               ),
