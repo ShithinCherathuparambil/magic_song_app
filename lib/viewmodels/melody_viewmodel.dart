@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math' as math;
+import 'dart:typed_data';
 
 import 'package:ffmpeg_kit_flutter_new_min_gpl/ffmpeg_kit.dart';
 import 'package:ffmpeg_kit_flutter_new_min_gpl/return_code.dart';
@@ -13,11 +15,16 @@ import 'package:record/record.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../models/saved_voice.dart';
+import '../models/studio_project.dart';
 import '../models/vocal_preset.dart';
 
-enum RecordingState { idle, recording, processing }
+enum RecordingState { idle, recording, paused, processing }
 
 enum PlaybackSource { processed, dry }
+
+enum ExportFormat { m4a, mp3, wav }
+
+enum ExportQuality { low, medium, high }
 
 class ProcessedVersion {
   final String path;
@@ -28,6 +35,40 @@ class ProcessedVersion {
     required this.path,
     required this.label,
     required this.createdAt,
+  });
+}
+
+class _StudioSettingsSnapshot {
+  final VocalPreset selectedPreset;
+  final bool isManualMode;
+  final double eqBass;
+  final double eqMid;
+  final double eqTreble;
+  final double reverb;
+  final double trimStartSec;
+  final double trimEndSec;
+  final double fadeInSec;
+  final double fadeOutSec;
+  final double noiseReduction;
+  final double noiseGateDb;
+  final double pitchSemitones;
+  final String? targetKey;
+
+  const _StudioSettingsSnapshot({
+    required this.selectedPreset,
+    required this.isManualMode,
+    required this.eqBass,
+    required this.eqMid,
+    required this.eqTreble,
+    required this.reverb,
+    required this.trimStartSec,
+    required this.trimEndSec,
+    required this.fadeInSec,
+    required this.fadeOutSec,
+    required this.noiseReduction,
+    required this.noiseGateDb,
+    required this.pitchSemitones,
+    required this.targetKey,
   });
 }
 
@@ -47,6 +88,8 @@ class MelodyViewModel extends ChangeNotifier {
 
   bool _isPlaying = false;
   bool get isPlaying => _isPlaying;
+  bool _isPlaybackPaused = false;
+  bool get isPlaybackPaused => _isPlaybackPaused;
 
   String? _rawRecordingPath;
   String? get rawRecordingPath => _rawRecordingPath;
@@ -82,8 +125,12 @@ class MelodyViewModel extends ChangeNotifier {
   String _statusText = 'Ready to record your melody vocal.';
   String get statusText => _statusText;
   String get workflowHint {
-    if (_recordingState == RecordingState.recording) {
-      return 'Step 1/3: Finish recording.';
+    if (_recordingState == RecordingState.recording ||
+        _recordingState == RecordingState.paused) {
+      return 'Step 1/3: Recording in progress.';
+    }
+    if (_recordingState == RecordingState.paused) {
+      return 'Step 1/3: Recording paused. Resume or stop.';
     }
     if (_recordingState == RecordingState.processing) {
       return 'Applying effect...';
@@ -112,13 +159,52 @@ class MelodyViewModel extends ChangeNotifier {
   double _reverb = 0.0;
   double get reverb => _reverb;
 
+  double _trimStartSec = 0.0;
+  double get trimStartSec => _trimStartSec;
+  double _trimEndSec = 0.0;
+  double get trimEndSec => _trimEndSec;
+  double _fadeInSec = 0.0;
+  double get fadeInSec => _fadeInSec;
+  double _fadeOutSec = 0.0;
+  double get fadeOutSec => _fadeOutSec;
+
+  double _noiseReduction = 0.0;
+  double get noiseReduction => _noiseReduction;
+  double _noiseGateDb = -42.0;
+  double get noiseGateDb => _noiseGateDb;
+
+  double _pitchSemitones = 0.0;
+  double get pitchSemitones => _pitchSemitones;
+  String? _targetKey;
+  String? get targetKey => _targetKey;
+  String? _detectedKey;
+  String? get detectedKey => _detectedKey;
+
+  ExportFormat _exportFormat = ExportFormat.m4a;
+  ExportFormat get exportFormat => _exportFormat;
+  ExportQuality _exportQuality = ExportQuality.high;
+  ExportQuality get exportQuality => _exportQuality;
+
+  final List<_StudioSettingsSnapshot> _undoStack = [];
+  final List<_StudioSettingsSnapshot> _redoStack = [];
+  bool get canUndoSettings => _undoStack.isNotEmpty;
+  bool get canRedoSettings => _redoStack.isNotEmpty;
+
+  final List<StudioProject> _projects = [];
+  List<StudioProject> get projects => List.unmodifiable(_projects);
+  bool get hasProjects => _projects.isNotEmpty;
+
   Timer? _amplitudeTimer;
   Timer? _autoApplyTimer;
   Timer? _settingsPersistTimer;
+  StreamSubscription<Amplitude>? _recordAmplitudeSubscription;
+  StreamSubscription<Duration>? _playbackPositionSubscription;
   bool _autoApplyInProgress = false;
   bool _autoApplyQueued = false;
   final List<double> _amplitudes = [];
   List<double> get amplitudes => _amplitudes;
+  final List<double> _capturedWaveform = [];
+  double _smoothedAmplitude = 0.0;
   final int _maxAmplitudes = 40;
 
   MelodyViewModel({
@@ -134,9 +220,11 @@ class MelodyViewModel extends ChangeNotifier {
     if (loadStudioSettingsOnInit) {
       unawaited(_loadStudioSettings());
     }
+    unawaited(_loadProjects());
     player.playerStateStream.listen((state) {
       if (state.processingState == ProcessingState.completed) {
         _isPlaying = false;
+        _isPlaybackPaused = false;
         _currentPlaybackPath = null;
         _statusText = 'Playback completed.';
         _stopPlaybackAnimation();
@@ -150,6 +238,8 @@ class MelodyViewModel extends ChangeNotifier {
     _amplitudeTimer?.cancel();
     _autoApplyTimer?.cancel();
     _settingsPersistTimer?.cancel();
+    _recordAmplitudeSubscription?.cancel();
+    _playbackPositionSubscription?.cancel();
     audioRecorder.dispose();
     player.dispose();
     super.dispose();
@@ -165,48 +255,159 @@ class MelodyViewModel extends ChangeNotifier {
 
   void _startAmplitudePolling() {
     _amplitudes.clear();
-    _amplitudeTimer?.cancel();
-    _amplitudeTimer = Timer.periodic(const Duration(milliseconds: 100), (
-      timer,
-    ) async {
-      if (_recordingState == RecordingState.recording) {
-        final amp = await audioRecorder.getAmplitude();
-        // Normalize roughly between 0.0 and 1.0 (Record returns dB from -160 to 0)
-        final db = amp.current.clamp(-60.0, 0.0);
-        final normalized = (db + 60.0) / 60.0;
-        _addAmplitude(normalized);
-      }
-    });
+    _capturedWaveform.clear();
+    _smoothedAmplitude = 0.0;
+    _recordAmplitudeSubscription?.cancel();
+    _recordAmplitudeSubscription = audioRecorder
+        .onAmplitudeChanged(const Duration(milliseconds: 70))
+        .listen((amp) {
+          if (_recordingState != RecordingState.recording) {
+            return;
+          }
+          // Use current dB only; amp.max can remain elevated and flatten motion.
+          final db = amp.current.clamp(-75.0, 0.0);
+          final normalized = (db + 75.0) / 75.0;
+          _smoothedAmplitude =
+              (_smoothedAmplitude * 0.65) + (normalized * 0.35);
+          _capturedWaveform.add(_smoothedAmplitude);
+          _addAmplitude(_smoothedAmplitude);
+        });
   }
 
-  void _stopAmplitudeTimer() {
+  void _stopAmplitudeTimer({bool clearWave = true}) {
     _amplitudeTimer?.cancel();
     _amplitudeTimer = null;
-    _amplitudes.clear();
+    _recordAmplitudeSubscription?.cancel();
+    _recordAmplitudeSubscription = null;
+    if (clearWave) {
+      _amplitudes.clear();
+    }
     notifyListeners();
   }
 
   void _startPlaybackAnimation() {
     _amplitudes.clear();
     _amplitudeTimer?.cancel();
-    _amplitudeTimer = Timer.periodic(const Duration(milliseconds: 100), (
-      timer,
-    ) {
-      // Simulate playback amplitude
-      final randomAmp =
-          0.2 + (0.6 * (DateTime.now().millisecondsSinceEpoch % 100) / 100);
-      _addAmplitude(randomAmp);
+    _playbackPositionSubscription?.cancel();
+    if (_capturedWaveform.isEmpty) {
+      _amplitudeTimer = Timer.periodic(const Duration(milliseconds: 90), (
+        timer,
+      ) {
+        final fallback =
+            0.22 + (0.28 * (DateTime.now().millisecondsSinceEpoch % 100) / 100);
+        _addAmplitude(fallback);
+      });
+      return;
+    }
+
+    _playbackPositionSubscription = player.positionStream.listen((position) {
+      if (!_isPlaying || _capturedWaveform.isEmpty) {
+        return;
+      }
+      final duration = player.duration;
+      if (duration == null || duration.inMilliseconds <= 0) {
+        return;
+      }
+      final progress = (position.inMilliseconds / duration.inMilliseconds)
+          .clamp(0.0, 1.0);
+      final endIndex = (progress * _capturedWaveform.length).floor().clamp(
+        1,
+        _capturedWaveform.length,
+      );
+      _setAmplitudeWindow(endIndex);
     });
   }
 
   void _stopPlaybackAnimation() {
     _amplitudeTimer?.cancel();
     _amplitudeTimer = null;
+    _playbackPositionSubscription?.cancel();
+    _playbackPositionSubscription = null;
     _amplitudes.clear();
     notifyListeners();
   }
 
+  void _setAmplitudeWindow(int endExclusive) {
+    final end = endExclusive.clamp(1, _capturedWaveform.length);
+    final start = math.max(0, end - _maxAmplitudes);
+    _amplitudes
+      ..clear()
+      ..addAll(_capturedWaveform.sublist(start, end));
+    notifyListeners();
+  }
+
+  _StudioSettingsSnapshot _captureSettingsSnapshot() {
+    return _StudioSettingsSnapshot(
+      selectedPreset: _selectedPreset,
+      isManualMode: _isManualMode,
+      eqBass: _eqBass,
+      eqMid: _eqMid,
+      eqTreble: _eqTreble,
+      reverb: _reverb,
+      trimStartSec: _trimStartSec,
+      trimEndSec: _trimEndSec,
+      fadeInSec: _fadeInSec,
+      fadeOutSec: _fadeOutSec,
+      noiseReduction: _noiseReduction,
+      noiseGateDb: _noiseGateDb,
+      pitchSemitones: _pitchSemitones,
+      targetKey: _targetKey,
+    );
+  }
+
+  void _applySettingsSnapshot(_StudioSettingsSnapshot snap) {
+    _selectedPreset = snap.selectedPreset;
+    _isManualMode = snap.isManualMode;
+    _eqBass = snap.eqBass;
+    _eqMid = snap.eqMid;
+    _eqTreble = snap.eqTreble;
+    _reverb = snap.reverb;
+    _trimStartSec = snap.trimStartSec;
+    _trimEndSec = snap.trimEndSec;
+    _fadeInSec = snap.fadeInSec;
+    _fadeOutSec = snap.fadeOutSec;
+    _noiseReduction = snap.noiseReduction;
+    _noiseGateDb = snap.noiseGateDb;
+    _pitchSemitones = snap.pitchSemitones;
+    _targetKey = snap.targetKey;
+  }
+
+  void _pushUndoSnapshot() {
+    _undoStack.add(_captureSettingsSnapshot());
+    if (_undoStack.length > 60) {
+      _undoStack.removeAt(0);
+    }
+    _redoStack.clear();
+  }
+
+  void undoSettings() {
+    if (_undoStack.isEmpty) {
+      return;
+    }
+    _redoStack.add(_captureSettingsSnapshot());
+    final previous = _undoStack.removeLast();
+    _applySettingsSnapshot(previous);
+    _markProcessingDirty();
+    _scheduleSettingsPersist();
+    _statusText = 'Reverted previous studio change.';
+    notifyListeners();
+  }
+
+  void redoSettings() {
+    if (_redoStack.isEmpty) {
+      return;
+    }
+    _undoStack.add(_captureSettingsSnapshot());
+    final next = _redoStack.removeLast();
+    _applySettingsSnapshot(next);
+    _markProcessingDirty();
+    _scheduleSettingsPersist();
+    _statusText = 'Re-applied studio change.';
+    notifyListeners();
+  }
+
   void setPreset(VocalPreset preset) {
+    _pushUndoSnapshot();
     _selectedPreset = preset;
 
     switch (preset) {
@@ -281,6 +482,7 @@ class MelodyViewModel extends ChangeNotifier {
   }
 
   void setIsManualMode(bool val) {
+    _pushUndoSnapshot();
     _isManualMode = val;
     if (val) {
       _eqBass = 0.0;
@@ -296,6 +498,7 @@ class MelodyViewModel extends ChangeNotifier {
   }
 
   void setEqBass(double val) {
+    _pushUndoSnapshot();
     _eqBass = val;
     _markProcessingDirty();
     _scheduleSettingsPersist();
@@ -303,6 +506,7 @@ class MelodyViewModel extends ChangeNotifier {
   }
 
   void setEqMid(double val) {
+    _pushUndoSnapshot();
     _eqMid = val;
     _markProcessingDirty();
     _scheduleSettingsPersist();
@@ -310,6 +514,7 @@ class MelodyViewModel extends ChangeNotifier {
   }
 
   void setEqTreble(double val) {
+    _pushUndoSnapshot();
     _eqTreble = val;
     _markProcessingDirty();
     _scheduleSettingsPersist();
@@ -317,8 +522,90 @@ class MelodyViewModel extends ChangeNotifier {
   }
 
   void setReverb(double val) {
+    _pushUndoSnapshot();
     _reverb = val;
     _markProcessingDirty();
+    _scheduleSettingsPersist();
+    notifyListeners();
+  }
+
+  void setTrimStartSec(double value) {
+    _pushUndoSnapshot();
+    _trimStartSec = value.clamp(0.0, 30.0);
+    if (_trimEndSec > 0 && _trimEndSec <= _trimStartSec) {
+      _trimEndSec = (_trimStartSec + 0.5).clamp(0.0, 30.0);
+    }
+    _markProcessingDirty();
+    _scheduleSettingsPersist();
+    notifyListeners();
+  }
+
+  void setTrimEndSec(double value) {
+    _pushUndoSnapshot();
+    _trimEndSec = value.clamp(0.0, 30.0);
+    if (_trimEndSec > 0 && _trimEndSec <= _trimStartSec) {
+      _trimStartSec = (_trimEndSec - 0.5).clamp(0.0, 29.5);
+    }
+    _markProcessingDirty();
+    _scheduleSettingsPersist();
+    notifyListeners();
+  }
+
+  void setFadeInSec(double value) {
+    _pushUndoSnapshot();
+    _fadeInSec = value.clamp(0.0, 5.0);
+    _markProcessingDirty();
+    _scheduleSettingsPersist();
+    notifyListeners();
+  }
+
+  void setFadeOutSec(double value) {
+    _pushUndoSnapshot();
+    _fadeOutSec = value.clamp(0.0, 5.0);
+    _markProcessingDirty();
+    _scheduleSettingsPersist();
+    notifyListeners();
+  }
+
+  void setNoiseReduction(double value) {
+    _pushUndoSnapshot();
+    _noiseReduction = value.clamp(0.0, 1.0);
+    _markProcessingDirty();
+    _scheduleSettingsPersist();
+    notifyListeners();
+  }
+
+  void setNoiseGateDb(double value) {
+    _pushUndoSnapshot();
+    _noiseGateDb = value.clamp(-60.0, -20.0);
+    _markProcessingDirty();
+    _scheduleSettingsPersist();
+    notifyListeners();
+  }
+
+  void setPitchSemitones(double value) {
+    _pushUndoSnapshot();
+    _pitchSemitones = value.clamp(-6.0, 6.0);
+    _markProcessingDirty();
+    _scheduleSettingsPersist();
+    notifyListeners();
+  }
+
+  void setTargetKey(String? value) {
+    _pushUndoSnapshot();
+    _targetKey = value;
+    _scheduleSettingsPersist();
+    notifyListeners();
+  }
+
+  void setExportFormat(ExportFormat format) {
+    _exportFormat = format;
+    _scheduleSettingsPersist();
+    notifyListeners();
+  }
+
+  void setExportQuality(ExportQuality quality) {
+    _exportQuality = quality;
     _scheduleSettingsPersist();
     notifyListeners();
   }
@@ -354,6 +641,10 @@ class MelodyViewModel extends ChangeNotifier {
   }
 
   Future<void> startRecording() async {
+    if (_recordingState == RecordingState.paused) {
+      await toggleRecordingPause();
+      return;
+    }
     final micStatus = await Permission.microphone.request();
     if (!micStatus.isGranted) {
       setStatus('Microphone permission is required to record vocals.');
@@ -393,8 +684,24 @@ class MelodyViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> toggleRecordingPause() async {
+    if (_recordingState == RecordingState.recording) {
+      await audioRecorder.pause();
+      _recordingState = RecordingState.paused;
+      _statusText = 'Recording paused.';
+      notifyListeners();
+      return;
+    }
+    if (_recordingState == RecordingState.paused) {
+      await audioRecorder.resume();
+      _recordingState = RecordingState.recording;
+      _statusText = 'Recording resumed.';
+      notifyListeners();
+    }
+  }
+
   Future<void> stopRecordingAndProcess() async {
-    _stopAmplitudeTimer();
+    _stopAmplitudeTimer(clearWave: false);
 
     final recordedPath = await audioRecorder.stop();
     if (recordedPath == null) {
@@ -404,6 +711,7 @@ class MelodyViewModel extends ChangeNotifier {
     }
 
     _rawRecordingPath = recordedPath;
+    await _refreshWaveformFromFile(recordedPath);
     _recordingState = RecordingState.idle;
     _statusText = 'Recording saved. Choose preset/EQ and tap Apply Effect.';
     notifyListeners();
@@ -455,11 +763,17 @@ class MelodyViewModel extends ChangeNotifier {
               'acompressor=threshold=-20dB:ratio=3.0:attack=25:release=100:knee=2.8';
           break;
         case VocalPreset.modernIndie:
-          return 'highpass=f=80,equalizer=f=250:t=q:w=1:g=-3,equalizer=f=4000:t=q:w=1:g=3,equalizer=f=12000:t=q:w=1:g=4,acompressor=threshold=-18dB:ratio=3:attack=20:release=100:makeup=4,aecho=0.7:0.6:40|80:0.12|0.08,alimiter=limit=-1dB';
+          hpLp = 'highpass=f=80';
+          comp = 'acompressor=threshold=-18dB:ratio=3:attack=20:release=100';
+          break;
         case VocalPreset.cinematic:
-          return 'highpass=f=70,equalizer=f=200:t=q:w=1:g=2,equalizer=f=3000:t=q:w=1:g=3,equalizer=f=11000:t=q:w=1:g=5,acompressor=threshold=-22dB:ratio=3.5:attack=15:release=150:makeup=5,asplit[dry][wet];[wet]aecho=0.8:0.7:80|160:0.35|0.25[rev];[dry][rev]amix=inputs=2:weights=1 0.5,alimiter=limit=-1dB';
+          hpLp = 'highpass=f=70';
+          comp = 'acompressor=threshold=-22dB:ratio=3.5:attack=15:release=150';
+          break;
         case VocalPreset.airyVocal:
-          return 'highpass=f=80,equalizer=f=200:t=q:w=1:g=-2,equalizer=f=3000:t=q:w=1:g=2,equalizer=f=12000:t=q:w=1:g=4,acompressor=threshold=-20dB:ratio=3:attack=20:release=120:makeup=4,asplit[wet][dry];[wet]aecho=0.8:0.6:50|100:0.2|0.15[reverb];[dry][reverb]amix=inputs=2:weights=1 0.4,alimiter=limit=-1dB';
+          hpLp = 'highpass=f=80';
+          comp = 'acompressor=threshold=-20dB:ratio=3:attack=20:release=120';
+          break;
         case VocalPreset.podcast:
           hpLp = 'highpass=f=80,lowpass=f=12000';
           comp = 'acompressor=threshold=-20dB:ratio=4.0:attack=2:release=50';
@@ -498,12 +812,68 @@ class MelodyViewModel extends ChangeNotifier {
           'aecho=0.8:${outGain.toStringAsFixed(2)}:${delayCalc.toStringAsFixed(1)}:${decayCalc.toStringAsFixed(2)}';
     }
 
-    return '$hpLp,$eqString,$comp,$reverbString,alimiter=limit=0.95';
+    final trimParts = <String>[];
+    if (_trimStartSec > 0 || _trimEndSec > 0) {
+      final args = <String>[];
+      if (_trimStartSec > 0) {
+        args.add('start=${_trimStartSec.toStringAsFixed(2)}');
+      }
+      if (_trimEndSec > 0) {
+        args.add('end=${_trimEndSec.toStringAsFixed(2)}');
+      }
+      trimParts
+        ..add('atrim=${args.join(':')}')
+        ..add('asetpts=N/SR/TB');
+    }
+
+    final cleanupParts = <String>[];
+    if (_noiseReduction > 0) {
+      final nr = (6 + (_noiseReduction * 20)).toStringAsFixed(1);
+      cleanupParts.add('afftdn=nr=$nr');
+    }
+    cleanupParts.add('agate=threshold=${_noiseGateDb.toStringAsFixed(1)}dB');
+
+    final pitchParts = <String>[];
+    if (_pitchSemitones.abs() > 0.01) {
+      final factor = math.pow(2.0, _pitchSemitones / 12.0).toDouble();
+      final atempo = (1 / factor).clamp(0.5, 2.0);
+      pitchParts
+        ..add('asetrate=44100*${factor.toStringAsFixed(6)}')
+        ..add('aresample=44100')
+        ..add('atempo=${atempo.toStringAsFixed(6)}');
+    }
+
+    final fadeParts = <String>[];
+    if (_fadeInSec > 0) {
+      fadeParts.add('afade=t=in:st=0:d=${_fadeInSec.toStringAsFixed(2)}');
+    }
+    if (_fadeOutSec > 0 && _trimEndSec > _trimStartSec) {
+      final fadeOutStart = (_trimEndSec - _trimStartSec - _fadeOutSec).clamp(
+        0.0,
+        999.0,
+      );
+      fadeParts.add(
+        'afade=t=out:st=${fadeOutStart.toStringAsFixed(2)}:d=${_fadeOutSec.toStringAsFixed(2)}',
+      );
+    }
+
+    return [
+      ...trimParts,
+      ...cleanupParts,
+      hpLp,
+      eqString,
+      comp,
+      reverbString,
+      ...pitchParts,
+      ...fadeParts,
+      'alimiter=limit=0.95',
+    ].join(',');
   }
 
   Future<void> stopPlayback() async {
     await player.stop();
     _isPlaying = false;
+    _isPlaybackPaused = false;
     _currentPlaybackPath = null;
     _stopPlaybackAnimation();
     notifyListeners();
@@ -511,9 +881,10 @@ class MelodyViewModel extends ChangeNotifier {
 
   Future<void> togglePlayback() async {
     if (_isPlaying) {
-      await player.stop();
+      await player.pause();
       _isPlaying = false;
-      _currentPlaybackPath = null;
+      _isPlaybackPaused = true;
+      _statusText = 'Playback paused.';
       _stopPlaybackAnimation();
       notifyListeners();
       return;
@@ -536,9 +907,22 @@ class MelodyViewModel extends ChangeNotifier {
       setStatus('The recording file was not found on disk.');
       return;
     }
+    if (_isPlaybackPaused && _currentPlaybackPath == candidatePath) {
+      _isPlaying = true;
+      _isPlaybackPaused = false;
+      _statusText =
+          'Playing ${_playbackSource == PlaybackSource.dry ? 'dry' : 'processed'} vocal.';
+      _startPlaybackAnimation();
+      notifyListeners();
+      await player.play();
+      return;
+    }
+
+    await _refreshWaveformFromFile(candidatePath);
 
     await player.setFilePath(candidatePath);
     _isPlaying = true;
+    _isPlaybackPaused = false;
     _currentPlaybackPath = candidatePath;
     _statusText =
         'Playing ${_playbackSource == PlaybackSource.dry ? 'dry' : 'processed'} vocal.';
@@ -549,7 +933,7 @@ class MelodyViewModel extends ChangeNotifier {
   }
 
   String _processingProfileSignature() {
-    return '${_selectedPreset.name}|$_isManualMode|${_eqBass.toStringAsFixed(2)}|${_eqMid.toStringAsFixed(2)}|${_eqTreble.toStringAsFixed(2)}|${_reverb.toStringAsFixed(2)}';
+    return '${_selectedPreset.name}|$_isManualMode|${_eqBass.toStringAsFixed(2)}|${_eqMid.toStringAsFixed(2)}|${_eqTreble.toStringAsFixed(2)}|${_reverb.toStringAsFixed(2)}|${_trimStartSec.toStringAsFixed(2)}|${_trimEndSec.toStringAsFixed(2)}|${_fadeInSec.toStringAsFixed(2)}|${_fadeOutSec.toStringAsFixed(2)}|${_noiseReduction.toStringAsFixed(2)}|${_noiseGateDb.toStringAsFixed(1)}|${_pitchSemitones.toStringAsFixed(2)}|${_targetKey ?? ''}';
   }
 
   void _markProcessingDirty() {
@@ -623,6 +1007,27 @@ class MelodyViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> toggleABCompare() async {
+    final nextSource = _playbackSource == PlaybackSource.dry
+        ? PlaybackSource.processed
+        : PlaybackSource.dry;
+    final resumePosition = player.position;
+    final wasPlaying = _isPlaying;
+    if (_isPlaying || _isPlaybackPaused) {
+      await stopPlayback();
+    }
+    _playbackSource = nextSource;
+    _statusText = 'A/B switched to ${nextSource == PlaybackSource.dry ? 'Dry' : 'Processed'}.';
+    notifyListeners();
+    if (!wasPlaying) {
+      return;
+    }
+    await togglePlayback();
+    if (player.duration != null && resumePosition > Duration.zero) {
+      await player.seek(resumePosition);
+    }
+  }
+
   void setActiveProcessedVersion(String path) {
     final match = _processedVersions.where((version) => version.path == path);
     if (match.isEmpty) {
@@ -692,6 +1097,7 @@ class MelodyViewModel extends ChangeNotifier {
     _statusText = addToProcessedVersions
         ? '$statusPrefix and saved as ${version.label}.'
         : '$statusPrefix instantly.';
+    await _refreshWaveformFromFile(processedPath);
     await _deleteFileIfDisposable(
       previousProcessedPath,
       retain: {processedPath},
@@ -773,6 +1179,7 @@ class MelodyViewModel extends ChangeNotifier {
     if (_isPlaying) {
       await stopPlayback();
     }
+    await _refreshWaveformFromFile(path);
 
     await player.setFilePath(path);
     _isPlaying = true;
@@ -963,6 +1370,93 @@ class MelodyViewModel extends ChangeNotifier {
     await jsonFile.writeAsString(jsonEncode(payload));
   }
 
+  Future<void> _refreshWaveformFromFile(String inputPath) async {
+    final inputFile = File(inputPath);
+    if (!inputFile.existsSync()) {
+      return;
+    }
+
+    final appDir = await getApplicationDocumentsDirectory();
+    final pcmPath = p.join(
+      appDir.path,
+      'waveform_${DateTime.now().microsecondsSinceEpoch}.pcm',
+    );
+    final command = '-y -i "$inputPath" -ac 1 -ar 16000 -f s16le "$pcmPath"';
+    final session = await FFmpegKit.execute(command);
+    final rc = await session.getReturnCode();
+    if (!ReturnCode.isSuccess(rc)) {
+      return;
+    }
+
+    final pcmFile = File(pcmPath);
+    if (!pcmFile.existsSync()) {
+      return;
+    }
+
+    final bytes = await pcmFile.readAsBytes();
+    try {
+      await pcmFile.delete();
+    } catch (_) {
+      // Ignore temp cleanup failures.
+    }
+
+    final waveform = _convertPcmToWaveform(bytes);
+    if (waveform.isEmpty) {
+      return;
+    }
+
+    _capturedWaveform
+      ..clear()
+      ..addAll(waveform);
+    _amplitudes
+      ..clear()
+      ..addAll(waveform.take(_maxAmplitudes));
+    notifyListeners();
+  }
+
+  List<double> _convertPcmToWaveform(Uint8List bytes) {
+    if (bytes.length < 2) {
+      return const [];
+    }
+    final data = ByteData.sublistView(bytes);
+    final totalSamples = bytes.length ~/ 2;
+    if (totalSamples == 0) {
+      return const [];
+    }
+
+    final targetPoints = 280;
+    final samplesPerBucket = (totalSamples / targetPoints)
+        .ceil()
+        .clamp(1, 4096)
+        .toInt();
+    final points = <double>[];
+
+    var sampleIndex = 0;
+    while (sampleIndex < totalSamples) {
+      final end = (sampleIndex + samplesPerBucket < totalSamples)
+          ? sampleIndex + samplesPerBucket
+          : totalSamples;
+      var sumSquares = 0.0;
+      var count = 0;
+      for (var i = sampleIndex; i < end; i++) {
+        final v = data.getInt16(i * 2, Endian.little).toDouble() / 32768.0;
+        sumSquares += v * v;
+        count++;
+      }
+      if (count > 0) {
+        final rms = math.sqrt(sumSquares / count);
+        final normalized = (rms * 4.2).clamp(0.05, 1.0);
+        points.add(normalized);
+      }
+      sampleIndex = end;
+    }
+
+    if (points.isEmpty) {
+      return const [];
+    }
+    return points;
+  }
+
   Future<void> _loadSavedVoices() async {
     final appDir = await getApplicationDocumentsDirectory();
     final jsonFile = File(p.join(appDir.path, 'saved_voices.json'));
@@ -990,6 +1484,118 @@ class MelodyViewModel extends ChangeNotifier {
     final jsonFile = File(p.join(appDir.path, 'saved_voices.json'));
     final encoded = jsonEncode(_savedVoices.map((e) => e.toJson()).toList());
     await jsonFile.writeAsString(encoded);
+  }
+
+  Future<void> _loadProjects() async {
+    final appDir = await getApplicationDocumentsDirectory();
+    final jsonFile = File(p.join(appDir.path, 'studio_projects.json'));
+    if (!jsonFile.existsSync()) {
+      return;
+    }
+    try {
+      final rawText = await jsonFile.readAsString();
+      final decoded = jsonDecode(rawText) as List<dynamic>;
+      _projects
+        ..clear()
+        ..addAll(
+          decoded
+              .map((e) => StudioProject.fromJson(e as Map<String, dynamic>))
+              .where(
+                (project) =>
+                    project.rawPath == null ||
+                    File(project.rawPath!).existsSync(),
+              ),
+        );
+      notifyListeners();
+    } catch (_) {
+      // Ignore malformed cache and continue.
+    }
+  }
+
+  Future<void> _persistProjects() async {
+    final appDir = await getApplicationDocumentsDirectory();
+    final jsonFile = File(p.join(appDir.path, 'studio_projects.json'));
+    final encoded = jsonEncode(_projects.map((e) => e.toJson()).toList());
+    await jsonFile.writeAsString(encoded);
+  }
+
+  Future<void> saveCurrentProject({
+    required String name,
+    String notes = '',
+  }) async {
+    final now = DateTime.now();
+    final project = StudioProject(
+      id: '${now.microsecondsSinceEpoch}',
+      name: name.trim().isEmpty ? 'Untitled Project' : name.trim(),
+      notes: notes.trim(),
+      createdAt: now,
+      updatedAt: now,
+      rawPath: _rawRecordingPath,
+      processedPath: _processedRecordingPath,
+      activeProcessedPath: _activeProcessedPath,
+      selectedPreset: _selectedPreset.name,
+      isManualMode: _isManualMode,
+      eqBass: _eqBass,
+      eqMid: _eqMid,
+      eqTreble: _eqTreble,
+      reverb: _reverb,
+      trimStartSec: _trimStartSec,
+      trimEndSec: _trimEndSec,
+      fadeInSec: _fadeInSec,
+      fadeOutSec: _fadeOutSec,
+      noiseReduction: _noiseReduction,
+      noiseGateDb: _noiseGateDb,
+      pitchSemitones: _pitchSemitones,
+      targetKey: _targetKey,
+    );
+    _projects.insert(0, project);
+    await _persistProjects();
+    _statusText = 'Project "${project.name}" saved.';
+    notifyListeners();
+  }
+
+  Future<void> loadProject(String id) async {
+    final idx = _projects.indexWhere((project) => project.id == id);
+    if (idx == -1) {
+      return;
+    }
+    final project = _projects[idx];
+    _rawRecordingPath = project.rawPath;
+    _processedRecordingPath = project.processedPath;
+    _activeProcessedPath = project.activeProcessedPath;
+    _selectedPreset = VocalPreset.values.firstWhere(
+      (value) => value.name == project.selectedPreset,
+      orElse: () => VocalPreset.warmMelody,
+    );
+    _isManualMode = project.isManualMode;
+    _eqBass = project.eqBass;
+    _eqMid = project.eqMid;
+    _eqTreble = project.eqTreble;
+    _reverb = project.reverb;
+    _trimStartSec = project.trimStartSec;
+    _trimEndSec = project.trimEndSec;
+    _fadeInSec = project.fadeInSec;
+    _fadeOutSec = project.fadeOutSec;
+    _noiseReduction = project.noiseReduction;
+    _noiseGateDb = project.noiseGateDb;
+    _pitchSemitones = project.pitchSemitones;
+    _targetKey = project.targetKey;
+    _playbackSource = PlaybackSource.processed;
+    _statusText = 'Loaded project "${project.name}".';
+    if (_activeProcessedPath != null) {
+      await _refreshWaveformFromFile(_activeProcessedPath!);
+    } else if (_rawRecordingPath != null) {
+      await _refreshWaveformFromFile(_rawRecordingPath!);
+    }
+    _scheduleSettingsPersist();
+    notifyListeners();
+  }
+
+  Future<void> deleteProject(String id) async {
+    _projects.removeWhere((project) => project.id == id);
+    await _persistProjects();
+    _statusText = 'Project removed.';
+    notifyListeners();
   }
 
   Future<void> shareAudio() async {

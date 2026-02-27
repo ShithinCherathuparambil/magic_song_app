@@ -27,20 +27,8 @@ const List<PresetData> _availablePresets = [
   PresetData(
     preset: VocalPreset.warmMelody,
     title: 'Warm Melody',
-    subtitle: 'Recommended',
-    icon: Icons.waves,
-  ),
-  PresetData(
-    preset: VocalPreset.brightLead,
-    title: 'Bright Lead',
-    subtitle: 'Crisp & Punchy',
-    icon: Icons.graphic_eq,
-  ),
-  PresetData(
-    preset: VocalPreset.indieMalayalam,
-    title: 'Warm Indie',
-    subtitle: 'Warm & Emotional',
-    icon: Icons.auto_awesome,
+    subtitle: 'Balanced',
+    icon: Icons.waves_rounded,
   ),
   PresetData(
     preset: VocalPreset.modernIndie,
@@ -51,71 +39,56 @@ const List<PresetData> _availablePresets = [
   PresetData(
     preset: VocalPreset.cinematic,
     title: 'Cinematic',
-    subtitle: 'Big Wide Reverb',
+    subtitle: 'Wide + Epic',
     icon: Icons.movie_filter_rounded,
   ),
   PresetData(
     preset: VocalPreset.airyVocal,
     title: 'Airy Vocal',
-    subtitle: 'Balanced Studio',
+    subtitle: 'Studio Blend',
     icon: Icons.tune_rounded,
+  ),
+  PresetData(
+    preset: VocalPreset.brightLead,
+    title: 'Bright Lead',
+    subtitle: 'Forward',
+    icon: Icons.graphic_eq,
+  ),
+  PresetData(
+    preset: VocalPreset.indieMalayalam,
+    title: 'Warm Indie',
+    subtitle: 'Emotional',
+    icon: Icons.auto_awesome,
   ),
   PresetData(
     preset: VocalPreset.podcast,
     title: 'Podcast',
-    subtitle: 'Radio Broadcast',
+    subtitle: 'Broadcast',
     icon: Icons.mic_external_on,
   ),
   PresetData(
     preset: VocalPreset.cathedral,
     title: 'Cathedral',
-    subtitle: 'Epic Reverb',
+    subtitle: 'Long Space',
     icon: Icons.account_balance,
   ),
   PresetData(
     preset: VocalPreset.lofi,
     title: 'Lo-Fi',
-    subtitle: 'Telephone Effect',
+    subtitle: 'Telephone',
     icon: Icons.phone_in_talk,
   ),
 ];
 
-class _MelodyRecorderViewState extends State<MelodyRecorderView>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _pulseController;
-  late Animation<double> _pulseAnimation;
+class _MelodyRecorderViewState extends State<MelodyRecorderView> {
   String _lastStatusText = '';
-
-  @override
-  void initState() {
-    super.initState();
-    _pulseController = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 1),
-    );
-    _pulseAnimation = Tween<double>(begin: 1.0, end: 1.2).animate(
-      CurvedAnimation(parent: _pulseController, curve: Curves.easeInOut),
-    );
-  }
-
-  @override
-  void dispose() {
-    _pulseController.dispose();
-    super.dispose();
-  }
 
   Future<void> _startRecording() async {
     final provider = context.read<MelodyViewModel>();
     await provider.startRecording();
-    if (provider.recordingState == RecordingState.recording) {
-      _pulseController.repeat(reverse: true);
-    }
   }
 
-  Future<void> _stopRecordingAndProcess() async {
-    _pulseController.stop();
-    _pulseController.reset();
-
+  Future<void> _stopRecording() async {
     final provider = context.read<MelodyViewModel>();
     await provider.stopRecordingAndProcess();
   }
@@ -123,6 +96,37 @@ class _MelodyRecorderViewState extends State<MelodyRecorderView>
   Future<void> _togglePlayback() async {
     final provider = context.read<MelodyViewModel>();
     await provider.togglePlayback();
+  }
+
+  Future<void> _resetSession() async {
+    final provider = context.read<MelodyViewModel>();
+    final shouldReset =
+        await showDialog<bool>(
+          context: context,
+          builder: (dialogContext) {
+            return AlertDialog(
+              title: const Text('Start New Recording?'),
+              content: const Text(
+                'Current unsaved recording session will be cleared.',
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(dialogContext).pop(false),
+                  child: const Text('Cancel'),
+                ),
+                FilledButton(
+                  onPressed: () => Navigator.of(dialogContext).pop(true),
+                  child: const Text('Reset'),
+                ),
+              ],
+            );
+          },
+        ) ??
+        false;
+
+    if (shouldReset) {
+      await provider.resetCurrentSession();
+    }
   }
 
   void _maybeShowCriticalToast(String statusText) {
@@ -162,6 +166,7 @@ class _MelodyRecorderViewState extends State<MelodyRecorderView>
         final hasRaw = provider.hasRawRecording;
         final hasProcessed = provider.hasProcessedRecording;
         final canPlay = provider.canPlaySelectedSource;
+
         if (provider.statusText != _lastStatusText) {
           _lastStatusText = provider.statusText;
           _maybeShowCriticalToast(provider.statusText);
@@ -173,7 +178,7 @@ class _MelodyRecorderViewState extends State<MelodyRecorderView>
         if (isRecording) {
           primaryIcon = Icons.stop_rounded;
           primaryLabel = 'Stop Recording';
-          primaryAction = _stopRecordingAndProcess;
+          primaryAction = _stopRecording;
         } else if (!hasRaw) {
           primaryIcon = Icons.mic_rounded;
           primaryLabel = 'Start Recording';
@@ -191,378 +196,193 @@ class _MelodyRecorderViewState extends State<MelodyRecorderView>
         return Scaffold(
           extendBodyBehindAppBar: true,
           appBar: AppBar(
-            title: Text(
-              'Magic Song Studio',
-              style: TextStyle(
-                fontWeight: FontWeight.w600,
-                letterSpacing: 0.5.sp,
-              ),
-            ),
             backgroundColor: Colors.transparent,
             elevation: 0,
-            centerTitle: true,
+            title: const Text('Magic Song Studio'),
             actions: [
               IconButton(
+                tooltip: 'Saved Voices',
                 onPressed: () =>
                     Navigator.of(context).pushNamed(AppRoutes.savedVoices),
                 icon: const Icon(Icons.library_music_rounded),
-                tooltip: 'Saved Voices',
               ),
             ],
           ),
           body: Stack(
             children: [
-              // Background Gradient
-              Container(
-                decoration: const BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [
-                      Color(0xFF0D0D12),
-                      Color(0xFF1A1A2E),
-                      Color(0xFF0F3433),
-                    ],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-                ),
-              ),
-              // Glow Orbs
-              Positioned(
-                top: -50.h,
-                left: -50.w,
-                child: Container(
-                  width: 300.w,
-                  height: 300.h,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: const Color(0xFF00FFCC).withValues(alpha: 0.15),
-                    boxShadow: [
-                      BoxShadow(
-                        color: const Color(0xFF00FFCC).withValues(alpha: 0.2),
-                        blurRadius: 100.r,
-                        spreadRadius: 50.r,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              Positioned(
-                bottom: -50.h,
-                right: -50.w,
-                child: Container(
-                  width: 300.w,
-                  height: 300.h,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: const Color(0xFF7B2CBF).withValues(alpha: 0.15),
-                    boxShadow: [
-                      BoxShadow(
-                        color: const Color(0xFF7B2CBF).withValues(alpha: 0.2),
-                        blurRadius: 100.r,
-                        spreadRadius: 50.r,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              // Main Content
+              const _Backdrop(),
               SafeArea(
                 child: ListView(
-                  padding: EdgeInsets.symmetric(
-                    // horizontal: 24.w,
-                    vertical: 16.h,
-                  ),
                   physics: const BouncingScrollPhysics(),
+                  padding: EdgeInsets.fromLTRB(0.w, 10.h, 0.w, 24.h),
                   children: [
                     Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 24.w),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Expanded(
-                            child: Text(
-                              'Vocal Processing Tools',
-                              style: Theme.of(context).textTheme.titleLarge
-                                  ?.copyWith(
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 20.sp,
-                                  ),
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                          Text(
-                            'Manual',
-                            style: TextStyle(
-                              fontSize: 14.sp,
-                              color: Colors.white70,
-                            ),
-                          ),
-                          Switch(
-                            value: provider.isManualMode,
-                            onChanged: isBusy || isRecording
-                                ? null
-                                : (val) {
-                                    provider.setIsManualMode(val);
-                                    provider.setStatus(
-                                      val
-                                          ? 'Switched to Manual EQ & Reverb.'
-                                          : 'Switched to Presets.',
-                                    );
-                                  },
-                            activeThumbColor: const Color(0xFF00FFCC),
-                          ),
-                        ],
+                      padding: EdgeInsets.symmetric(horizontal: 16.w),
+                      child: _HeaderRow(
+                        manualMode: provider.isManualMode,
+                        disabled: isBusy || isRecording,
+                        onManualChanged: (val) {
+                          provider.setIsManualMode(val);
+                          provider.setStatus(
+                            val
+                                ? 'Manual controls enabled.'
+                                : 'Preset mode enabled.',
+                          );
+                        },
                       ),
                     ),
-                    SizedBox(height: 16.h),
-                    if (!provider.isManualMode) ...[
-                      SizedBox(
-                        height: 180.h,
-                        child: ListView.separated(
-                          scrollDirection: Axis.horizontal,
-                          physics: const BouncingScrollPhysics(),
-                          padding: EdgeInsets.symmetric(horizontal: 24.w),
-                          itemCount: _availablePresets.length,
-                          separatorBuilder: (context, index) =>
-                              SizedBox(width: 16.w),
-                          itemBuilder: (context, index) {
-                            final presetData = _availablePresets[index];
-                            return _PresetCard(
-                              title: presetData.title,
-                              subtitle: presetData.subtitle,
-                              icon: presetData.icon,
-                              isSelected:
-                                  provider.selectedPreset == presetData.preset,
-                              onTap: isBusy || isRecording
-                                  ? null
-                                  : () => provider.setPreset(presetData.preset),
-                            );
-                          },
+                    SizedBox(height: 14.h),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 16.w),
+                      child: _StatusPanel(
+                        statusText: provider.statusText,
+                        hintText: provider.workflowHint,
+                        hasRaw: hasRaw,
+                        hasProcessed: hasProcessed,
+                        isBusy: isBusy,
+                      ),
+                    ),
+                    SizedBox(height: 14.h),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.only(left: 14.w, top: 10.h),
+                          child: Text(
+                            'Preset Bank',
+                            style: Theme.of(context).textTheme.titleMedium
+                                ?.copyWith(fontWeight: FontWeight.w700),
+                          ),
+                        ),
+                        SizedBox(height: 10.h),
+                        if (!provider.isManualMode)
+                          SizedBox(
+                            height: 146.h,
+                            child: ListView.separated(
+                              scrollDirection: Axis.horizontal,
+                              padding: EdgeInsets.symmetric(horizontal: 14.w),
+                              itemCount: _availablePresets.length,
+                              separatorBuilder: (context, index) =>
+                                  SizedBox(width: 12.w),
+                              itemBuilder: (context, index) {
+                                final preset = _availablePresets[index];
+                                return _PresetTile(
+                                  data: preset,
+                                  selected:
+                                      provider.selectedPreset == preset.preset,
+                                  onTap: isBusy || isRecording
+                                      ? null
+                                      : () => provider.setPreset(preset.preset),
+                                );
+                              },
+                            ),
+                          )
+                        else
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 16.w),
+                            child: Text(
+                              'Manual mode is on. EQ and reverb are editable below.',
+                              style: TextStyle(
+                                color: Colors.white.withValues(alpha: 0.8),
+                              ),
+                            ),
+                          ),
+                      ],
+                    ),
+                    SizedBox(height: 14.h),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 16.w),
+                      child: _GlassPanel(
+                        child: Column(
+                          children: [
+                            _AudioVisualizerWidget(
+                              amplitudes: provider.amplitudes,
+                            ),
+                            SizedBox(height: 10.h),
+                            Text(
+                              'Playback Source',
+                              style: Theme.of(context).textTheme.labelLarge,
+                            ),
+                            SizedBox(height: 6.h),
+                            Wrap(
+                              spacing: 8.w,
+                              children: [
+                                ChoiceChip(
+                                  label: const Text('Processed'),
+                                  selected:
+                                      provider.playbackSource ==
+                                      PlaybackSource.processed,
+                                  onSelected: isBusy || isRecording
+                                      ? null
+                                      : (_) => provider.setPlaybackSource(
+                                          PlaybackSource.processed,
+                                        ),
+                                ),
+                                ChoiceChip(
+                                  label: const Text('Dry'),
+                                  selected:
+                                      provider.playbackSource ==
+                                      PlaybackSource.dry,
+                                  onSelected: isBusy || isRecording
+                                      ? null
+                                      : (_) => provider.setPlaybackSource(
+                                          PlaybackSource.dry,
+                                        ),
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: 14.h),
+                            SizedBox(
+                              width: double.infinity,
+                              child: FilledButton.icon(
+                                onPressed: primaryAction,
+                                icon: Icon(primaryIcon),
+                                label: Text(primaryLabel),
+                              ),
+                            ),
+                            SizedBox(height: 10.h),
+                            Wrap(
+                              spacing: 8.w,
+                              runSpacing: 8.h,
+                              alignment: WrapAlignment.center,
+                              children: [
+                                OutlinedButton.icon(
+                                  onPressed: hasRaw
+                                      ? () => provider
+                                            .saveVoiceWithSelectedEffect()
+                                      : null,
+                                  icon: const Icon(Icons.save_rounded),
+                                  label: const Text('Save'),
+                                ),
+                                OutlinedButton.icon(
+                                  onPressed: hasRaw
+                                      ? () => provider.shareAudio()
+                                      : null,
+                                  icon: const Icon(Icons.share_rounded),
+                                  label: const Text('Share'),
+                                ),
+                                OutlinedButton.icon(
+                                  onPressed: hasRaw ? _resetSession : null,
+                                  icon: const Icon(Icons.refresh_rounded),
+                                  label: const Text('New'),
+                                ),
+                              ],
+                            ),
+                          ],
                         ),
                       ),
-                      SizedBox(height: 24.h),
-                    ],
-
-                    // Recorder Section
-                    Center(
-                      child: Column(
-                        children: [
-                          _AudioVisualizerWidget(
-                            amplitudes: provider.amplitudes,
-                          ),
-                          SizedBox(height: 24.h),
-                          _StatusBadge(
-                            statusText: provider.statusText,
-                            isBusy: isBusy,
-                          ),
-                          SizedBox(height: 14.h),
-                          _WorkflowHint(
-                            text: provider.workflowHint,
-                            hasRaw: hasRaw,
-                            hasProcessed: hasProcessed,
-                          ),
-                          SizedBox(height: 28.h),
-                          SizedBox(
-                            width: 260.w,
-                            child: FilledButton.icon(
-                              onPressed: primaryAction,
-                              icon: isRecording
-                                  ? AnimatedBuilder(
-                                      animation: _pulseAnimation,
-                                      builder: (context, child) {
-                                        return Transform.scale(
-                                          scale: _pulseAnimation.value,
-                                          child: Icon(primaryIcon),
-                                        );
-                                      },
-                                    )
-                                  : Icon(primaryIcon),
-                              label: Text(primaryLabel),
-                            ),
-                          ),
-                          SizedBox(height: 10.h),
-                          Text(
-                            'Effects apply automatically when you change preset or EQ.',
-                            style: TextStyle(
-                              color: Colors.white.withValues(alpha: 0.65),
-                              fontSize: 12.sp,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                          SizedBox(height: 24.h),
-                          // Secondary controls
-                          AnimatedOpacity(
-                            opacity: hasRaw ? 1.0 : 0.5,
-                            duration: const Duration(milliseconds: 300),
-                            child: Container(
-                              padding: EdgeInsets.symmetric(
-                                horizontal: 24.w,
-                                vertical: 16.h,
-                              ),
-                              decoration: BoxDecoration(
-                                color: Colors.white.withValues(alpha: 0.05),
-                                borderRadius: BorderRadius.circular(30.r),
-                                border: Border.all(
-                                  color: Colors.white.withValues(alpha: 0.1),
-                                ),
-                              ),
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Wrap(
-                                    spacing: 8.w,
-                                    children: [
-                                      ChoiceChip(
-                                        label: const Text('Processed'),
-                                        selected:
-                                            provider.playbackSource ==
-                                            PlaybackSource.processed,
-                                        onSelected: isBusy || isRecording
-                                            ? null
-                                            : (_) => provider.setPlaybackSource(
-                                                PlaybackSource.processed,
-                                              ),
-                                      ),
-                                      ChoiceChip(
-                                        label: const Text('Dry'),
-                                        selected:
-                                            provider.playbackSource ==
-                                            PlaybackSource.dry,
-                                        onSelected: isBusy || isRecording
-                                            ? null
-                                            : (_) => provider.setPlaybackSource(
-                                                PlaybackSource.dry,
-                                              ),
-                                      ),
-                                    ],
-                                  ),
-                                  SizedBox(height: 14.h),
-                                  Wrap(
-                                    spacing: 10.w,
-                                    runSpacing: 10.h,
-                                    alignment: WrapAlignment.center,
-                                    children: [
-                                      FilledButton.tonalIcon(
-                                        onPressed: hasRaw
-                                            ? () => provider
-                                                  .saveVoiceWithSelectedEffect()
-                                            : null,
-                                        icon: const Icon(Icons.save_rounded),
-                                        label: const Text('Save'),
-                                      ),
-                                      OutlinedButton.icon(
-                                        onPressed: hasRaw
-                                            ? () => provider.shareAudio()
-                                            : null,
-                                        icon: const Icon(Icons.share_rounded),
-                                        label: const Text('Share'),
-                                      ),
-                                      OutlinedButton.icon(
-                                        onPressed: () => Navigator.of(
-                                          context,
-                                        ).pushNamed(AppRoutes.savedVoices),
-                                        icon: const Icon(
-                                          Icons.library_music_rounded,
-                                        ),
-                                        label: const Text('Saved'),
-                                      ),
-                                      OutlinedButton.icon(
-                                        onPressed: hasRaw
-                                            ? () async {
-                                                final shouldReset =
-                                                    await showDialog<bool>(
-                                                      context: context,
-                                                      builder: (dialogContext) {
-                                                        return AlertDialog(
-                                                          title: const Text(
-                                                            'Reset Session',
-                                                          ),
-                                                          content: const Text(
-                                                            'Start a new recording session? Current unsaved recording will be cleared.',
-                                                          ),
-                                                          actions: [
-                                                            TextButton(
-                                                              onPressed: () =>
-                                                                  Navigator.of(
-                                                                    dialogContext,
-                                                                  ).pop(false),
-                                                              child: const Text(
-                                                                'Cancel',
-                                                              ),
-                                                            ),
-                                                            FilledButton(
-                                                              onPressed: () =>
-                                                                  Navigator.of(
-                                                                    dialogContext,
-                                                                  ).pop(true),
-                                                              child: const Text(
-                                                                'Reset',
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        );
-                                                      },
-                                                    ) ??
-                                                    false;
-                                                if (shouldReset) {
-                                                  await provider
-                                                      .resetCurrentSession();
-                                                }
-                                              }
-                                            : null,
-                                        icon: const Icon(Icons.refresh_rounded),
-                                        label: const Text('Reset'),
-                                      ),
-                                    ],
-                                  ),
-                                  SizedBox(height: 10.h),
-                                  Text(
-                                    !hasRaw
-                                        ? 'Record first to enable effects and playback.'
-                                        : provider.playbackSource ==
-                                                  PlaybackSource.processed &&
-                                              !hasProcessed
-                                        ? 'Processing... switch to Dry for instant preview.'
-                                        : 'Tip: Compare Dry and Processed before sharing.',
-                                    style: TextStyle(
-                                      color: Colors.white.withValues(
-                                        alpha: 0.65,
-                                      ),
-                                      fontSize: 12.sp,
-                                    ),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
                     ),
-                    SizedBox(height: 30.h),
+                    SizedBox(height: 14.h),
                     Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 24.w),
-                      child: _GlassCard(
+                      padding: EdgeInsets.symmetric(horizontal: 16.w),
+                      child: _GlassPanel(
                         child: Theme(
                           data: Theme.of(
                             context,
                           ).copyWith(dividerColor: Colors.transparent),
                           child: ExpansionTile(
-                            initiallyExpanded: false,
-                            iconColor: Colors.white70,
-                            collapsedIconColor: Colors.white70,
-                            title: Text(
-                              'Advanced EQ & Reverb',
-                              style: Theme.of(context).textTheme.titleMedium
-                                  ?.copyWith(fontWeight: FontWeight.w600),
-                            ),
-                            subtitle: Text(
-                              'Open to fine tune',
-                              style: TextStyle(
-                                color: Colors.white.withValues(alpha: 0.6),
-                                fontSize: 12.sp,
-                              ),
-                            ),
+                            title: const Text('Advanced EQ & Reverb'),
+                            subtitle: const Text('Manual fine control'),
                             children: [
                               _StudioSlider(
                                 label: 'Bass',
@@ -571,7 +391,7 @@ class _MelodyRecorderViewState extends State<MelodyRecorderView>
                                 max: 10,
                                 onChanged: isBusy || isRecording
                                     ? null
-                                    : (val) => provider.setEqBass(val),
+                                    : (v) => provider.setEqBass(v),
                               ),
                               _StudioSlider(
                                 label: 'Mid',
@@ -580,7 +400,7 @@ class _MelodyRecorderViewState extends State<MelodyRecorderView>
                                 max: 10,
                                 onChanged: isBusy || isRecording
                                     ? null
-                                    : (val) => provider.setEqMid(val),
+                                    : (v) => provider.setEqMid(v),
                               ),
                               _StudioSlider(
                                 label: 'Treble',
@@ -589,16 +409,16 @@ class _MelodyRecorderViewState extends State<MelodyRecorderView>
                                 max: 10,
                                 onChanged: isBusy || isRecording
                                     ? null
-                                    : (val) => provider.setEqTreble(val),
+                                    : (v) => provider.setEqTreble(v),
                               ),
                               _StudioSlider(
-                                label: 'Studio Reverb',
+                                label: 'Reverb',
                                 value: provider.reverb,
                                 min: 0,
                                 max: 1,
                                 onChanged: isBusy || isRecording
                                     ? null
-                                    : (val) => provider.setReverb(val),
+                                    : (v) => provider.setReverb(v),
                               ),
                             ],
                           ),
@@ -607,57 +427,38 @@ class _MelodyRecorderViewState extends State<MelodyRecorderView>
                     ),
                     if (provider.processedVersions.isNotEmpty) ...[
                       SizedBox(height: 14.h),
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 24.w),
-                        child: _GlassCard(
-                          child: Theme(
-                            data: Theme.of(
-                              context,
-                            ).copyWith(dividerColor: Colors.transparent),
-                            child: ExpansionTile(
-                              initiallyExpanded: false,
-                              iconColor: Colors.white70,
-                              collapsedIconColor: Colors.white70,
-                              title: Text(
-                                'Processed Versions',
-                                style: Theme.of(context).textTheme.titleMedium
-                                    ?.copyWith(fontWeight: FontWeight.w600),
-                              ),
-                              subtitle: Text(
-                                'Select previous snapshots',
-                                style: TextStyle(
-                                  color: Colors.white.withValues(alpha: 0.6),
-                                  fontSize: 12.sp,
-                                ),
-                              ),
-                              children: [
-                                Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: Wrap(
-                                    spacing: 8.w,
-                                    runSpacing: 8.h,
-                                    children: provider.processedVersions
-                                        .map(
-                                          (version) => ChoiceChip(
-                                            label: Text(
-                                              version.label,
-                                              style: TextStyle(fontSize: 12.sp),
-                                            ),
-                                            selected:
-                                                provider.activeProcessedPath ==
+                      _GlassPanel(
+                        child: Theme(
+                          data: Theme.of(
+                            context,
+                          ).copyWith(dividerColor: Colors.transparent),
+                          child: ExpansionTile(
+                            title: const Text('Processed Snapshots'),
+                            subtitle: const Text('Jump to previous snapshots'),
+                            children: [
+                              Align(
+                                alignment: Alignment.centerLeft,
+                                child: Wrap(
+                                  spacing: 8.w,
+                                  runSpacing: 8.h,
+                                  children: provider.processedVersions
+                                      .map(
+                                        (version) => ChoiceChip(
+                                          label: Text(version.label),
+                                          selected:
+                                              provider.activeProcessedPath ==
+                                              version.path,
+                                          onSelected: (_) => provider
+                                              .setActiveProcessedVersion(
                                                 version.path,
-                                            onSelected: (_) => provider
-                                                .setActiveProcessedVersion(
-                                                  version.path,
-                                                ),
-                                          ),
-                                        )
-                                        .toList(),
-                                  ),
+                                              ),
+                                        ),
+                                      )
+                                      .toList(),
                                 ),
-                                SizedBox(height: 6.h),
-                              ],
-                            ),
+                              ),
+                              SizedBox(height: 6.h),
+                            ],
                           ),
                         ),
                       ),
@@ -673,6 +474,278 @@ class _MelodyRecorderViewState extends State<MelodyRecorderView>
   }
 }
 
+class _Backdrop extends StatelessWidget {
+  const _Backdrop();
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Color(0xFF0F1218), Color(0xFF141922), Color(0xFF181D27)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+          ),
+        ),
+        Positioned(
+          top: -80,
+          left: -40,
+          child: _GlowOrb(
+            size: 260,
+            color: const Color(0xFFF4C95D).withValues(alpha: 0.08),
+          ),
+        ),
+        Positioned(
+          top: 220,
+          right: -30,
+          child: _GlowOrb(
+            size: 220,
+            color: const Color(0xFFF4C95D).withValues(alpha: 0.12),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _GlowOrb extends StatelessWidget {
+  final double size;
+  final Color color;
+
+  const _GlowOrb({required this.size, required this.color});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: size.w,
+      height: size.w,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: color,
+        boxShadow: [BoxShadow(color: color, blurRadius: 95, spreadRadius: 25)],
+      ),
+    );
+  }
+}
+
+class _HeaderRow extends StatelessWidget {
+  final bool manualMode;
+  final bool disabled;
+  final ValueChanged<bool> onManualChanged;
+
+  const _HeaderRow({
+    required this.manualMode,
+    required this.disabled,
+    required this.onManualChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Voice Craft',
+                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+              SizedBox(height: 2.h),
+              Text(
+                'Record, sculpt, and compare your voice.',
+                style: TextStyle(color: Colors.white.withValues(alpha: 0.8)),
+              ),
+            ],
+          ),
+        ),
+        Text(
+          'Manual',
+          style: TextStyle(color: Colors.white.withValues(alpha: 0.8)),
+        ),
+        Switch(
+          value: manualMode,
+          onChanged: disabled ? null : onManualChanged,
+          activeThumbColor: const Color(0xFFF4C95D),
+          activeTrackColor: const Color(0x66F4C95D),
+        ),
+      ],
+    );
+  }
+}
+
+class _StatusPanel extends StatelessWidget {
+  final String statusText;
+  final String hintText;
+  final bool hasRaw;
+  final bool hasProcessed;
+  final bool isBusy;
+
+  const _StatusPanel({
+    required this.statusText,
+    required this.hintText,
+    required this.hasRaw,
+    required this.hasProcessed,
+    required this.isBusy,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return _GlassPanel(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              if (isBusy)
+                const Padding(
+                  padding: EdgeInsets.only(right: 10),
+                  child: SizedBox(
+                    width: 16,
+                    height: 16,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  ),
+                ),
+              Expanded(
+                child: Text(
+                  statusText,
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: 6.h),
+          Text(
+            hintText,
+            style: TextStyle(color: Colors.white.withValues(alpha: 0.8)),
+          ),
+          SizedBox(height: 8.h),
+          Wrap(
+            spacing: 8.w,
+            children: [
+              _StepChip(label: 'Record', done: hasRaw),
+              _StepChip(label: 'Processed', done: hasProcessed),
+              _StepChip(label: 'Ready', done: hasRaw && hasProcessed),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _StepChip extends StatelessWidget {
+  final String label;
+  final bool done;
+
+  const _StepChip({required this.label, required this.done});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(999),
+        color: done
+            ? const Color(0xFFF4C95D).withValues(alpha: 0.18)
+            : Colors.white.withValues(alpha: 0.10),
+        border: Border.all(
+          color: done
+              ? const Color(0xFFF4C95D).withValues(alpha: 0.60)
+              : Colors.white.withValues(alpha: 0.2),
+        ),
+      ),
+      child: Text(label),
+    );
+  }
+}
+
+class _GlassPanel extends StatelessWidget {
+  final Widget child;
+
+  const _GlassPanel({required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(20.r),
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 14, sigmaY: 14),
+        child: Container(
+          padding: const EdgeInsets.all(14),
+          decoration: BoxDecoration(
+            color: Colors.white.withValues(alpha: 0.08),
+            borderRadius: BorderRadius.circular(20.r),
+            border: Border.all(color: Colors.white.withValues(alpha: 0.12)),
+          ),
+          child: child,
+        ),
+      ),
+    );
+  }
+}
+
+class _PresetTile extends StatelessWidget {
+  final PresetData data;
+  final bool selected;
+  final VoidCallback? onTap;
+
+  const _PresetTile({required this.data, required this.selected, this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(16.r),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        width: 128.w,
+        padding: EdgeInsets.all(12.w),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(16.r),
+          color: selected
+              ? const Color(0xFFF4C95D).withValues(alpha: 0.16)
+              : Colors.white.withValues(alpha: 0.06),
+          border: Border.all(
+            color: selected
+                ? const Color(0xFFF4C95D).withValues(alpha: 0.55)
+                : Colors.white.withValues(alpha: 0.12),
+          ),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(data.icon, color: Colors.white, size: 24.sp),
+            SizedBox(height: 8.h),
+            Text(
+              data.title,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(fontWeight: FontWeight.w700, fontSize: 14.sp),
+            ),
+            SizedBox(height: 2.h),
+            Text(
+              data.subtitle,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                color: Colors.white.withValues(alpha: 0.8),
+                fontSize: 12.sp,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class _AudioVisualizerWidget extends StatelessWidget {
   final List<double> amplitudes;
 
@@ -680,12 +753,11 @@ class _AudioVisualizerWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       height: 60.h,
       width: double.infinity,
-      padding: EdgeInsets.symmetric(horizontal: 24.w),
       child: CustomPaint(
-        painter: _AudioWaveformPainter(amplitudes: amplitudes, maxBars: 40),
+        painter: _AudioWaveformPainter(amplitudes: amplitudes, maxBars: 44),
       ),
     );
   }
@@ -699,38 +771,35 @@ class _AudioWaveformPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..style = PaintingStyle.fill
-      ..strokeCap = StrokeCap.round;
-
-    final double barWidth = (size.width - ((maxBars - 1) * 4).w) / maxBars;
-    final double maxBarHeight = size.height;
-    final double centerY = size.height / 2;
+    final paint = Paint()..style = PaintingStyle.fill;
+    final barWidth = (size.width - ((maxBars - 1) * 3).w) / maxBars;
+    final centerY = size.height / 2;
 
     int startIndex = amplitudes.length - maxBars;
-    if (startIndex < 0) startIndex = 0;
+    if (startIndex < 0) {
+      startIndex = 0;
+    }
 
     for (int i = 0; i < maxBars; i++) {
-      int ampIndex = startIndex + i;
-      double amp = 0.05; // Base minimum amplitude
-      if (ampIndex >= 0 && ampIndex < amplitudes.length) {
-        amp = amplitudes[ampIndex];
+      final idx = startIndex + i;
+      var amp = 0.06;
+      if (idx >= 0 && idx < amplitudes.length) {
+        amp = amplitudes[idx];
       }
 
-      final barHeight = amp * maxBarHeight;
-      final x = i * (barWidth + 4.w);
-
+      final barHeight = amp * size.height;
+      final x = i * (barWidth + 3.w);
       final rect = RRect.fromRectAndRadius(
         Rect.fromCenter(
           center: Offset(x + barWidth / 2, centerY),
           width: barWidth,
           height: barHeight,
         ),
-        Radius.circular(10.r),
+        Radius.circular(8.r),
       );
 
       paint.shader = const LinearGradient(
-        colors: [Color(0xFF00FFCC), Color(0xFF00B3FF)],
+        colors: [Color(0xFFE5B94A), Color(0xFFFFE4A3)],
         begin: Alignment.topCenter,
         end: Alignment.bottomCenter,
       ).createShader(rect.outerRect);
@@ -740,237 +809,7 @@ class _AudioWaveformPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    return true; // We want to repaint frequently when animating
-  }
-}
-
-class _StatusBadge extends StatelessWidget {
-  final String statusText;
-  final bool isBusy;
-
-  const _StatusBadge({required this.statusText, required this.isBusy});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
-      decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(30.r),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.2)),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.2),
-            blurRadius: 10.r,
-            offset: Offset(0, 4.h),
-          ),
-        ],
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          if (isBusy) ...[
-            SizedBox(
-              width: 14.w,
-              height: 14.h,
-              child: const CircularProgressIndicator(
-                strokeWidth: 2,
-                valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF00FFCC)),
-              ),
-            ),
-            SizedBox(width: 12.w),
-          ],
-          Flexible(
-            child: Text(
-              statusText,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 14.sp,
-                fontWeight: FontWeight.w500,
-                color: Colors.white,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _WorkflowHint extends StatelessWidget {
-  final String text;
-  final bool hasRaw;
-  final bool hasProcessed;
-
-  const _WorkflowHint({
-    required this.text,
-    required this.hasRaw,
-    required this.hasProcessed,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Text(
-          text,
-          style: TextStyle(
-            color: Colors.white.withValues(alpha: 0.8),
-            fontSize: 13.sp,
-            fontWeight: FontWeight.w500,
-          ),
-          textAlign: TextAlign.center,
-        ),
-        SizedBox(height: 10.h),
-        Wrap(
-          spacing: 8.w,
-          runSpacing: 8.h,
-          alignment: WrapAlignment.center,
-          children: [
-            _StepChip(label: '1 Record', isDone: hasRaw),
-            _StepChip(label: '2 Apply', isDone: hasProcessed),
-            _StepChip(label: '3 Play', isDone: hasRaw && hasProcessed),
-          ],
-        ),
-      ],
-    );
-  }
-}
-
-class _StepChip extends StatelessWidget {
-  final String label;
-  final bool isDone;
-
-  const _StepChip({required this.label, required this.isDone});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
-      decoration: BoxDecoration(
-        color: isDone
-            ? const Color(0xFF00FFCC).withValues(alpha: 0.18)
-            : Colors.white.withValues(alpha: 0.08),
-        borderRadius: BorderRadius.circular(999),
-        border: Border.all(
-          color: isDone
-              ? const Color(0xFF00FFCC).withValues(alpha: 0.6)
-              : Colors.white.withValues(alpha: 0.2),
-        ),
-      ),
-      child: Text(
-        label,
-        style: TextStyle(
-          color: Colors.white.withValues(alpha: isDone ? 0.95 : 0.75),
-          fontSize: 12.sp,
-          fontWeight: FontWeight.w600,
-        ),
-      ),
-    );
-  }
-}
-
-class _GlassCard extends StatelessWidget {
-  final Widget child;
-
-  const _GlassCard({required this.child});
-
-  @override
-  Widget build(BuildContext context) {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(24.r),
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
-        child: Container(
-          padding: EdgeInsets.all(24.w),
-          decoration: BoxDecoration(
-            color: Colors.white.withValues(alpha: 0.05),
-            borderRadius: BorderRadius.circular(24.r),
-            border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
-          ),
-          child: child,
-        ),
-      ),
-    );
-  }
-}
-
-class _PresetCard extends StatelessWidget {
-  final String title;
-  final String subtitle;
-  final IconData icon;
-  final bool isSelected;
-  final VoidCallback? onTap;
-
-  const _PresetCard({
-    required this.title,
-    required this.subtitle,
-    required this.icon,
-    required this.isSelected,
-    this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 300),
-        width: 140.w,
-        padding: EdgeInsets.all(16.w),
-        decoration: BoxDecoration(
-          color: isSelected
-              ? const Color(0xFF00FFCC).withValues(alpha: 0.15)
-              : Colors.white.withValues(alpha: 0.05),
-          borderRadius: BorderRadius.circular(20.r),
-          border: Border.all(
-            color: isSelected
-                ? const Color(0xFF00FFCC).withValues(alpha: 0.5)
-                : Colors.white.withValues(alpha: 0.1),
-            width: isSelected ? 2.w : 1.w,
-          ),
-          boxShadow: isSelected
-              ? [
-                  BoxShadow(
-                    color: const Color(0xFF00FFCC).withValues(alpha: 0.2),
-                    blurRadius: 15.r,
-                    spreadRadius: 1.r,
-                  ),
-                ]
-              : [],
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              icon,
-              color: isSelected ? const Color(0xFF00FFCC) : Colors.white54,
-              size: 28.sp,
-            ),
-            SizedBox(height: 8.h),
-            Text(
-              title,
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 16.sp,
-                color: isSelected ? Colors.white : Colors.white70,
-              ),
-            ),
-            SizedBox(height: 4.h),
-            Text(
-              subtitle,
-              style: TextStyle(
-                fontSize: 12.sp,
-                color: isSelected ? Colors.white70 : Colors.white38,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
 }
 
 class _StudioSlider extends StatelessWidget {
@@ -997,31 +836,14 @@ class _StudioSlider extends StatelessWidget {
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                label,
-                style: TextStyle(
-                  fontSize: 16.sp,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.white,
-                ),
-              ),
-              Text(
-                value.toStringAsFixed(1),
-                style: TextStyle(
-                  fontSize: 14.sp,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.white70,
-                ),
-              ),
-            ],
+            children: [Text(label), Text(value.toStringAsFixed(1))],
           ),
           SliderTheme(
             data: SliderThemeData(
-              activeTrackColor: const Color(0xFF00FFCC),
-              inactiveTrackColor: Colors.white.withValues(alpha: 0.1),
-              thumbColor: const Color(0xFF00FFCC),
-              overlayColor: const Color(0xFF00FFCC).withValues(alpha: 0.2),
+              activeTrackColor: const Color(0xFFE5B94A),
+              inactiveTrackColor: Colors.white.withValues(alpha: 0.15),
+              thumbColor: const Color(0xFFF4C95D),
+              overlayColor: const Color(0x66F4C95D),
               trackHeight: 4.h,
             ),
             child: Slider(

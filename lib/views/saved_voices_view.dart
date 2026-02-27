@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
@@ -21,57 +23,7 @@ class SavedVoicesView extends StatelessWidget {
           ),
           body: Stack(
             children: [
-              Container(
-                decoration: const BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [
-                      Color(0xFF0D0D12),
-                      Color(0xFF1A1A2E),
-                      Color(0xFF0F3433),
-                    ],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-                ),
-              ),
-              Positioned(
-                top: -40.h,
-                left: -40.w,
-                child: Container(
-                  width: 260.w,
-                  height: 260.h,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: const Color(0xFF00FFCC).withValues(alpha: 0.14),
-                    boxShadow: [
-                      BoxShadow(
-                        color: const Color(0xFF00FFCC).withValues(alpha: 0.18),
-                        blurRadius: 90.r,
-                        spreadRadius: 35.r,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              Positioned(
-                bottom: -40.h,
-                right: -40.w,
-                child: Container(
-                  width: 240.w,
-                  height: 240.h,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: const Color(0xFF7B2CBF).withValues(alpha: 0.12),
-                    boxShadow: [
-                      BoxShadow(
-                        color: const Color(0xFF7B2CBF).withValues(alpha: 0.18),
-                        blurRadius: 90.r,
-                        spreadRadius: 35.r,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
+              const _SavedBackdrop(),
               SafeArea(
                 child: provider.hasSavedVoices
                     ? ListView.separated(
@@ -85,99 +37,118 @@ class SavedVoicesView extends StatelessWidget {
                               provider.isPlaying &&
                               provider.currentPlaybackPath == voice.path;
 
-                          return Container(
-                            padding: EdgeInsets.all(14.w),
-                            decoration: BoxDecoration(
-                              color: Colors.white.withValues(alpha: 0.07),
-                              borderRadius: BorderRadius.circular(16.r),
-                              border: Border.all(
-                                color: Colors.white.withValues(alpha: 0.14),
-                              ),
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  voice.title,
-                                  style: Theme.of(
-                                    context,
-                                  ).textTheme.titleMedium,
+                          return ClipRRect(
+                            borderRadius: BorderRadius.circular(18.r),
+                            child: BackdropFilter(
+                              filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+                              child: Container(
+                                padding: EdgeInsets.all(14.w),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(18.r),
+                                  color: Colors.white.withValues(alpha: 0.09),
+                                  border: Border.all(
+                                    color: Colors.white.withValues(alpha: 0.16),
+                                  ),
                                 ),
-                                SizedBox(height: 4.h),
-                                Text(
-                                  'Effect: ${voice.profile}',
-                                  style: Theme.of(context).textTheme.bodySmall,
-                                ),
-                                SizedBox(height: 4.h),
-                                Text(
-                                  'Saved: ${voice.createdAt}',
-                                  style: Theme.of(context).textTheme.bodySmall,
-                                ),
-                                SizedBox(height: 10.h),
-                                Wrap(
-                                  spacing: 10.w,
-                                  runSpacing: 8.h,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    FilledButton.icon(
-                                      onPressed: () =>
-                                          provider.playSavedVoice(voice.path),
-                                      icon: Icon(
-                                        isPlaying
-                                            ? Icons.pause_rounded
-                                            : Icons.play_arrow_rounded,
+                                    Text(
+                                      voice.title,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleMedium
+                                          ?.copyWith(
+                                            fontWeight: FontWeight.w700,
+                                          ),
+                                    ),
+                                    SizedBox(height: 4.h),
+                                    Text('Effect: ${voice.profile}'),
+                                    SizedBox(height: 2.h),
+                                    Text(
+                                      'Saved: ${voice.createdAt}',
+                                      style: TextStyle(
+                                        color: Colors.white.withValues(
+                                          alpha: 0.8,
+                                        ),
                                       ),
-                                      label: Text(isPlaying ? 'Stop' : 'Play'),
                                     ),
-                                    OutlinedButton.icon(
-                                      onPressed: () =>
-                                          provider.shareSavedVoice(voice.path),
-                                      icon: const Icon(Icons.share_rounded),
-                                      label: const Text('Share'),
-                                    ),
-                                    IconButton(
-                                      onPressed: () async {
-                                        final confirmed = await showDialog<bool>(
-                                          context: context,
-                                          builder: (dialogContext) {
-                                            return AlertDialog(
-                                              title: const Text(
-                                                'Delete Saved Voice',
-                                              ),
-                                              content: Text(
-                                                'Delete "${voice.title}" permanently?',
-                                              ),
-                                              actions: [
-                                                TextButton(
-                                                  onPressed: () => Navigator.of(
-                                                    dialogContext,
-                                                  ).pop(false),
-                                                  child: const Text('Cancel'),
-                                                ),
-                                                FilledButton(
-                                                  onPressed: () => Navigator.of(
-                                                    dialogContext,
-                                                  ).pop(true),
-                                                  child: const Text('Delete'),
-                                                ),
-                                              ],
-                                            );
+                                    SizedBox(height: 10.h),
+                                    Wrap(
+                                      spacing: 8.w,
+                                      runSpacing: 8.h,
+                                      children: [
+                                        FilledButton.icon(
+                                          onPressed: () => provider
+                                              .playSavedVoice(voice.path),
+                                          icon: Icon(
+                                            isPlaying
+                                                ? Icons.pause_rounded
+                                                : Icons.play_arrow_rounded,
+                                          ),
+                                          label: Text(
+                                            isPlaying ? 'Stop' : 'Play',
+                                          ),
+                                        ),
+                                        OutlinedButton.icon(
+                                          onPressed: () => provider
+                                              .shareSavedVoice(voice.path),
+                                          icon: const Icon(Icons.share_rounded),
+                                          label: const Text('Share'),
+                                        ),
+                                        OutlinedButton.icon(
+                                          onPressed: () async {
+                                            final confirm =
+                                                await showDialog<bool>(
+                                                  context: context,
+                                                  builder: (dialogContext) {
+                                                    return AlertDialog(
+                                                      title: const Text(
+                                                        'Delete Saved Voice',
+                                                      ),
+                                                      content: Text(
+                                                        'Delete "${voice.title}" permanently?',
+                                                      ),
+                                                      actions: [
+                                                        TextButton(
+                                                          onPressed: () =>
+                                                              Navigator.of(
+                                                                dialogContext,
+                                                              ).pop(false),
+                                                          child: const Text(
+                                                            'Cancel',
+                                                          ),
+                                                        ),
+                                                        FilledButton(
+                                                          onPressed: () =>
+                                                              Navigator.of(
+                                                                dialogContext,
+                                                              ).pop(true),
+                                                          child: const Text(
+                                                            'Delete',
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    );
+                                                  },
+                                                ) ??
+                                                false;
+                                            if (confirm) {
+                                              await provider.deleteSavedVoice(
+                                                voice.id,
+                                              );
+                                            }
                                           },
-                                        );
-
-                                        if (confirmed == true) {
-                                          await provider.deleteSavedVoice(
-                                            voice.id,
-                                          );
-                                        }
-                                      },
-                                      tooltip: 'Delete',
-                                      icon: const Icon(
-                                        Icons.delete_outline_rounded,
-                                      ),
+                                          icon: const Icon(
+                                            Icons.delete_outline_rounded,
+                                          ),
+                                          label: const Text('Delete'),
+                                        ),
+                                      ],
                                     ),
                                   ],
                                 ),
-                              ],
+                              ),
                             ),
                           );
                         },
@@ -186,7 +157,7 @@ class SavedVoicesView extends StatelessWidget {
                         child: Padding(
                           padding: EdgeInsets.all(24.w),
                           child: Text(
-                            'No saved voices yet.\nRecord and tap Save in Studio.',
+                            'No saved voices yet.\nRecord in Studio and tap Save.',
                             textAlign: TextAlign.center,
                             style: Theme.of(context).textTheme.titleMedium,
                           ),
@@ -197,6 +168,63 @@ class SavedVoicesView extends StatelessWidget {
           ),
         );
       },
+    );
+  }
+}
+
+class _SavedBackdrop extends StatelessWidget {
+  const _SavedBackdrop();
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Color(0xFF0F1218), Color(0xFF141922), Color(0xFF181D27)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+          ),
+        ),
+        Positioned(
+          top: -30,
+          right: -20,
+          child: _Orb(
+            size: 220,
+            color: const Color(0xFFF4C95D).withValues(alpha: 0.08),
+          ),
+        ),
+        Positioned(
+          bottom: -40,
+          left: -20,
+          child: _Orb(
+            size: 240,
+            color: const Color(0xFFF4C95D).withValues(alpha: 0.12),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _Orb extends StatelessWidget {
+  final double size;
+  final Color color;
+
+  const _Orb({required this.size, required this.color});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: size.w,
+      height: size.w,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: color,
+        boxShadow: [BoxShadow(color: color, blurRadius: 80, spreadRadius: 20)],
+      ),
     );
   }
 }

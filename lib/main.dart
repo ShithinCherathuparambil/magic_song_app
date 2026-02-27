@@ -31,10 +31,49 @@ class MagicSongApp extends StatelessWidget {
             title: 'Magic Song',
             theme: ThemeData(
               brightness: Brightness.dark,
-              colorScheme: ColorScheme.fromSeed(
-                brightness: Brightness.dark,
-                seedColor: const Color(0xFF00FFCC),
-                surface: const Color(0xFF0D0D12),
+              colorScheme: const ColorScheme.dark(
+                primary: Color(0xFFF4C95D),
+                secondary: Color(0xFFE5B94A),
+                surface: Color(0xFF17191E),
+                onPrimary: Color(0xFF141414),
+                onSurface: Color(0xFFF2F3F5),
+              ),
+              scaffoldBackgroundColor: const Color(0xFF101217),
+              appBarTheme: const AppBarTheme(
+                backgroundColor: Colors.transparent,
+                foregroundColor: Color(0xFFF2F3F5),
+              ),
+              filledButtonTheme: FilledButtonThemeData(
+                style: FilledButton.styleFrom(
+                  backgroundColor: const Color(0xFFF4C95D),
+                  foregroundColor: const Color(0xFF141414),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 12,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                ),
+              ),
+              outlinedButtonTheme: OutlinedButtonThemeData(
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: const Color(0xFFF2F3F5),
+                  side: const BorderSide(color: Color(0x33F4C95D)),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 12,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                ),
+              ),
+              chipTheme: ThemeData.dark().chipTheme.copyWith(
+                backgroundColor: const Color(0xFF1D2026),
+                selectedColor: const Color(0xFFF4C95D).withValues(alpha: 0.18),
+                side: const BorderSide(color: Color(0x33F4C95D)),
+                labelStyle: const TextStyle(color: Color(0xFFE8EAED)),
               ),
               textTheme: GoogleFonts.outfitTextTheme(
                 ThemeData.dark().textTheme,
