@@ -4,8 +4,8 @@ import 'dart:io';
 import 'dart:math' as math;
 import 'dart:typed_data';
 
-import 'package:ffmpeg_kit_flutter_new_min_gpl/ffmpeg_kit.dart';
-import 'package:ffmpeg_kit_flutter_new_min_gpl/return_code.dart';
+import 'package:ffmpeg_kit_flutter_new_audio/ffmpeg_kit.dart';
+import 'package:ffmpeg_kit_flutter_new_audio/return_code.dart';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:path/path.dart' as p;
@@ -1017,7 +1017,8 @@ class MelodyViewModel extends ChangeNotifier {
       await stopPlayback();
     }
     _playbackSource = nextSource;
-    _statusText = 'A/B switched to ${nextSource == PlaybackSource.dry ? 'Dry' : 'Processed'}.';
+    _statusText =
+        'A/B switched to ${nextSource == PlaybackSource.dry ? 'Dry' : 'Processed'}.';
     notifyListeners();
     if (!wasPlaying) {
       return;
