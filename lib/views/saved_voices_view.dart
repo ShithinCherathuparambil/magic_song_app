@@ -182,7 +182,7 @@ class _SavedBackdrop extends StatelessWidget {
         Container(
           decoration: const BoxDecoration(
             gradient: LinearGradient(
-              colors: [Color(0xFF0F1218), Color(0xFF141922), Color(0xFF181D27)],
+              colors: [Color(0xFF003C72), Color(0xFF002D56), Color(0xFF00223D)],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
@@ -193,7 +193,7 @@ class _SavedBackdrop extends StatelessWidget {
           right: -20,
           child: _Orb(
             size: 220,
-            color: const Color(0xFFF4C95D).withValues(alpha: 0.08),
+            color: const Color(0xFFFD4F00).withValues(alpha: 0.08),
           ),
         ),
         Positioned(
@@ -201,7 +201,7 @@ class _SavedBackdrop extends StatelessWidget {
           left: -20,
           child: _Orb(
             size: 240,
-            color: const Color(0xFFF4C95D).withValues(alpha: 0.12),
+            color: const Color(0xFFFD4F00).withValues(alpha: 0.12),
           ),
         ),
       ],

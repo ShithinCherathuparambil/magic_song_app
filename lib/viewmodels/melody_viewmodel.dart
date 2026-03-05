@@ -7,6 +7,7 @@ import 'dart:typed_data';
 import 'package:ffmpeg_kit_flutter_new_audio/ffmpeg_kit.dart';
 import 'package:ffmpeg_kit_flutter_new_audio/return_code.dart';
 import 'package:flutter/material.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
@@ -716,6 +717,77 @@ class MelodyViewModel extends ChangeNotifier {
     _recordingState = RecordingState.idle;
     _statusText = 'Recording saved. Choose preset/EQ and tap Apply Effect.';
     notifyListeners();
+  }
+
+  Future<void> importAudioFile() async {
+    try {
+      final result = await FilePicker.platform.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: [
+          'mp3',
+          'wav',
+          'm4a',
+          'aac',
+          'ogg',
+          'flac',
+          'amr',
+          'wma',
+          'aiff',
+          'aif',
+          'opus',
+          'weba',
+        ],
+      );
+      if (result == null || result.files.single.path == null) {
+        return;
+      }
+
+      final sourcePath = result.files.single.path!;
+      final sourceFile = File(sourcePath);
+
+      if (!sourceFile.existsSync()) {
+        setStatus('Could not locate the imported file.');
+        return;
+      }
+
+      if (_isPlaying) {
+        await stopPlayback();
+      }
+      await _cleanupProcessedArtifacts();
+
+      _recordingState = RecordingState.processing;
+      _statusText = 'Importing audio file...';
+      notifyListeners();
+
+      final appDir = await getApplicationDocumentsDirectory();
+      final fileName = 'imported_${DateTime.now().millisecondsSinceEpoch}.m4a';
+      final destinationPath = p.join(appDir.path, fileName);
+
+      // Copy the picked file to the app's internal documents directory
+      await sourceFile.copy(destinationPath);
+
+      _rawRecordingPath = destinationPath;
+      _processedRecordingPath = null;
+      _activeProcessedPath = null;
+      _lastProcessedProfileSignature = null;
+      _hasUnappliedAudioChanges = false;
+      _processedVersions.clear();
+
+      // Setup the view visually treating this entirely as the raw recording
+      setPreset(VocalPreset.clean);
+      _recordingState = RecordingState.idle;
+      _statusText =
+          'Imported audio file successfully. You can now apply effects.';
+      notifyListeners();
+
+      // Trigger waveform generation immediately
+      await _refreshWaveformFromFile(destinationPath);
+    } catch (e) {
+      debugPrint('Error during audio import: $e');
+      setStatus(
+        'Failed to import audio file. Please ensure the app is restarted.',
+      );
+    }
   }
 
   Future<String?> _applyVocalProcessing(

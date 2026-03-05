@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
@@ -216,15 +217,16 @@ class _MelodyRecorderViewState extends State<MelodyRecorderView> {
                   ),
                 );
             } else {
-              // Exits the application when double tapped within 2 seconds
-              // For a production app this removes the Flutter Engine activity
-              Navigator.of(context).pop();
+              // Recommended way to exit on Android to avoid black screen flicker
+              SystemNavigator.pop();
             }
           },
           child: Scaffold(
             extendBodyBehindAppBar: true,
+            backgroundColor: Colors.transparent,
             appBar: AppBar(
               backgroundColor: Colors.transparent,
+              surfaceTintColor: Colors.transparent,
               elevation: 0,
               title: const Text('Magic Song Studio'),
               actions: [
@@ -396,6 +398,15 @@ class _MelodyRecorderViewState extends State<MelodyRecorderView> {
                                     icon: const Icon(Icons.refresh_rounded),
                                     label: const Text('New'),
                                   ),
+                                  OutlinedButton.icon(
+                                    onPressed: isBusy || isRecording
+                                        ? null
+                                        : () => provider.importAudioFile(),
+                                    icon: const Icon(
+                                      Icons.drive_folder_upload_rounded,
+                                    ),
+                                    label: const Text('Import'),
+                                  ),
                                 ],
                               ),
                             ],
@@ -449,6 +460,41 @@ class _MelodyRecorderViewState extends State<MelodyRecorderView> {
                                   onChanged: isBusy || isRecording
                                       ? null
                                       : (v) => provider.setReverb(v),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 14.h),
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 16.w),
+                        child: _GlassPanel(
+                          child: Theme(
+                            data: Theme.of(
+                              context,
+                            ).copyWith(dividerColor: Colors.transparent),
+                            child: ExpansionTile(
+                              title: const Text('Noise Cancellation'),
+                              subtitle: const Text('Filter background noise'),
+                              children: [
+                                _StudioSlider(
+                                  label: 'Noise Reduction',
+                                  value: provider.noiseReduction,
+                                  min: 0.0,
+                                  max: 1.0,
+                                  onChanged: isBusy || isRecording
+                                      ? null
+                                      : (v) => provider.setNoiseReduction(v),
+                                ),
+                                _StudioSlider(
+                                  label: 'Noise Gate (dB)',
+                                  value: provider.noiseGateDb,
+                                  min: -60.0,
+                                  max: -20.0,
+                                  onChanged: isBusy || isRecording
+                                      ? null
+                                      : (v) => provider.setNoiseGateDb(v),
                                 ),
                               ],
                             ),
@@ -517,7 +563,7 @@ class _Backdrop extends StatelessWidget {
         Container(
           decoration: const BoxDecoration(
             gradient: LinearGradient(
-              colors: [Color(0xFF0F1218), Color(0xFF141922), Color(0xFF181D27)],
+              colors: [Color(0xFF003C72), Color(0xFF002D56), Color(0xFF00223D)],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
@@ -528,7 +574,7 @@ class _Backdrop extends StatelessWidget {
           left: -40,
           child: _GlowOrb(
             size: 260,
-            color: const Color(0xFFF4C95D).withValues(alpha: 0.08),
+            color: const Color(0xFFFD4F00).withValues(alpha: 0.12),
           ),
         ),
         Positioned(
@@ -536,7 +582,7 @@ class _Backdrop extends StatelessWidget {
           right: -30,
           child: _GlowOrb(
             size: 220,
-            color: const Color(0xFFF4C95D).withValues(alpha: 0.12),
+            color: const Color(0xFFFABF30).withValues(alpha: 0.12),
           ),
         ),
       ],
@@ -604,8 +650,8 @@ class _HeaderRow extends StatelessWidget {
         Switch(
           value: manualMode,
           onChanged: disabled ? null : onManualChanged,
-          activeThumbColor: const Color(0xFFF4C95D),
-          activeTrackColor: const Color(0x66F4C95D),
+          activeThumbColor: const Color(0xFFFD4F00),
+          activeTrackColor: const Color(0x66FD4F00),
         ),
       ],
     );
@@ -685,11 +731,11 @@ class _StepChip extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(999),
         color: done
-            ? const Color(0xFFF4C95D).withValues(alpha: 0.18)
+            ? const Color(0xFFFD4F00).withValues(alpha: 0.18)
             : Colors.white.withValues(alpha: 0.10),
         border: Border.all(
           color: done
-              ? const Color(0xFFF4C95D).withValues(alpha: 0.60)
+              ? const Color(0xFFFD4F00).withValues(alpha: 0.60)
               : Colors.white.withValues(alpha: 0.2),
         ),
       ),
@@ -742,11 +788,11 @@ class _PresetTile extends StatelessWidget {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16.r),
           color: selected
-              ? const Color(0xFFF4C95D).withValues(alpha: 0.16)
+              ? const Color(0xFFFD4F00).withValues(alpha: 0.16)
               : Colors.white.withValues(alpha: 0.06),
           border: Border.all(
             color: selected
-                ? const Color(0xFFF4C95D).withValues(alpha: 0.55)
+                ? const Color(0xFFFD4F00).withValues(alpha: 0.55)
                 : Colors.white.withValues(alpha: 0.12),
           ),
         ),
@@ -832,7 +878,7 @@ class _AudioWaveformPainter extends CustomPainter {
       );
 
       paint.shader = const LinearGradient(
-        colors: [Color(0xFFE5B94A), Color(0xFFFFE4A3)],
+        colors: [Color(0xFFFABF30), Color(0xFFFD4F00)],
         begin: Alignment.topCenter,
         end: Alignment.bottomCenter,
       ).createShader(rect.outerRect);
@@ -873,10 +919,10 @@ class _StudioSlider extends StatelessWidget {
           ),
           SliderTheme(
             data: SliderThemeData(
-              activeTrackColor: const Color(0xFFE5B94A),
+              activeTrackColor: Colors.blueGrey,
               inactiveTrackColor: Colors.white.withValues(alpha: 0.15),
-              thumbColor: const Color(0xFFF4C95D),
-              overlayColor: const Color(0x66F4C95D),
+              thumbColor: Color(0xFF002D56),
+              overlayColor: const Color(0x66FD4F00),
               trackHeight: 4.h,
             ),
             child: Slider(

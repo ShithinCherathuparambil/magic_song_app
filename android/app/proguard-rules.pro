@@ -15,6 +15,15 @@
 -keep class com.arthenica.ffmpegkit.** { *; }
 -keep class com.antonkarpenko.ffmpegkit.** { *; }
 
+# File Picker
+-keep class com.mr.flutter.plugin.filepicker.** { *; }
+
+# Share Plus
+-keep class dev.fluttercommunity.plus.share.** { *; }
+
+# Just Audio
+-keep class com.ryanheise.just_audio.** { *; }
+
 # Google Play Core / SplitInstall (Flutter Deferred Components)
 -keep class com.google.android.play.core.splitcompat.** { *; }
 -keep class com.google.android.play.core.splitinstall.** { *; }

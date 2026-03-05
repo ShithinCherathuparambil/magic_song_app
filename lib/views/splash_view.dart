@@ -48,10 +48,10 @@ class _SplashViewState extends State<SplashView> {
                 ),
               ),
               SizedBox(height: 24.h),
-              const CircularProgressIndicator(
-                strokeWidth: 2.5,
-                valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFF4C95D)),
-              ),
+              // const CircularProgressIndicator(
+              //   strokeWidth: 2.5,
+              //   valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFFD4F00)),
+              // ),
             ],
           ),
         ),
