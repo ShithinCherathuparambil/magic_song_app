@@ -24,48 +24,12 @@ class _SplashViewState extends State<SplashView> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Color(0xFF0F1218), Color(0xFF141922), Color(0xFF181D27)],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-        ),
+        decoration: const BoxDecoration(color: Color(0xFF003C72)),
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Container(
-                width: 128.w,
-                height: 128.w,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  gradient: const LinearGradient(
-                    colors: [Color(0xFFE5B94A), Color(0xFFFFE4A3)],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: const Color(0xFFF4C95D).withValues(alpha: 0.22),
-                      blurRadius: 45.r,
-                      spreadRadius: 10.r,
-                    ),
-                  ],
-                ),
-                child: Container(
-                  margin: EdgeInsets.all(8.w),
-                  decoration: const BoxDecoration(
-                    color: Color(0xFF12161D),
-                    shape: BoxShape.circle,
-                  ),
-                  child: Icon(
-                    Icons.mic_external_on_rounded,
-                    size: 56.sp,
-                    color: const Color(0xFFFFFFFF),
-                  ),
-                ),
-              ),
+              Image.asset('assets/app_icon.png', width: 128.w, height: 128.w),
               SizedBox(height: 28.h),
               Text(
                 'Magic Song Studio',

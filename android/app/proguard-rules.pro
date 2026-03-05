@@ -13,8 +13,13 @@
 
 # FFmpegKit
 -keep class com.arthenica.ffmpegkit.** { *; }
+-keep class com.antonkarpenko.ffmpegkit.** { *; }
 
 # Google Play Core / SplitInstall (Flutter Deferred Components)
 -keep class com.google.android.play.core.splitcompat.** { *; }
 -keep class com.google.android.play.core.splitinstall.** { *; }
 -keep class com.google.android.play.core.tasks.** { *; }
+
+-dontwarn com.google.android.play.core.splitcompat.**
+-dontwarn com.google.android.play.core.splitinstall.**
+-dontwarn com.google.android.play.core.tasks.**

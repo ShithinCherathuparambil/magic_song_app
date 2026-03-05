@@ -1,0 +1,749 @@
+--------- beginning of main
+03-05 11:14:04.349   655   830 D InetDiagMessage: Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET, states=14
+03-05 11:14:04.350   655   830 D InetDiagMessage: Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET6, states=14
+03-05 11:14:04.350   655   830 D InetDiagMessage: Destroyed live tcp sockets for uids={10206} in 2ms
+03-05 11:14:04.710  5519  5519 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+03-05 11:14:04.713  5519  5519 I AndroidRuntime: Using default boot image
+03-05 11:14:04.713  5519  5519 I AndroidRuntime: Leaving lock profiling enabled
+03-05 11:14:04.715  5519  5519 I app_process: Using CollectorTypeCMC GC.
+03-05 11:14:04.756  5519  5519 D nativeloader: InitDefaultPublicLibraries for_preload=1: libandroid.so:libaaudio.so:libamidi.so:libbinder_ndk.so:libc.so:libcamera2ndk.so:libdl.so:libEGL.so:libGLESv1_CM.so:libGLESv2.so:libGLESv3.so:libicu.so:libicui18n.so:libicuuc.so:libjnigraphics.so:liblog.so:libmediandk.so:libm.so:libnativehelper.so:libnativewindow.so:libOpenMAXAL.so:libOpenSLES.so:libRS.so:libstdc++.so:libsync.so:libvulkan.so:libwebviewchromium_plat_support.so:libz.so
+03-05 11:14:04.774  5519  5519 D nativeloader: Load libicu_jni.so using APEX ns com_android_art for caller /apex/com.android.art/javalib/core-oj.jar: ok
+03-05 11:14:04.774  5519  5519 D app_process: u_setTimeZoneFilesDirectory("/apex/com.android.tzdata/etc/tz/versioned/9/icu") succeeded. 
+03-05 11:14:04.775  5519  5519 D app_process: I18n APEX ICU file found: /apex/com.android.i18n/etc/icu/icudt76l.dat
+03-05 11:14:04.780  5519  5519 D nativeloader: Load libjavacore.so using APEX ns com_android_art for caller /apex/com.android.art/javalib/core-oj.jar: ok
+03-05 11:14:04.782  5519  5519 D nativeloader: Load libopenjdk.so using APEX ns com_android_art for caller /apex/com.android.art/javalib/core-oj.jar: ok
+03-05 11:14:04.818  5519  5519 D nativeloader: Load libframework-connectivity-tiramisu-jni.so using APEX ns com_android_tethering for caller /apex/com.android.tethering/javalib/framework-connectivity-t.jar: ok
+03-05 11:14:04.818  5519  5519 D AndroidRuntime: Calling main entry com.android.commands.monkey.Monkey
+03-05 11:14:04.820  5519  5519 D nativeloader: Load /system/lib64/libmonkey_jni.so using ns default for caller /system/framework/monkey.jar in same partition (is_bridged=0): ok
+03-05 11:14:04.820  5519  5519 W Monkey  : args: [-p, com.example.magic_song, -c, android.intent.category.LAUNCHER, 1]
+03-05 11:14:04.823  5519  5519 I AconfigPackage: android.media.swcodec.flags is mapped to com.android.media.swcodec
+03-05 11:14:04.824  5519  5519 I AconfigPackage: com.google.android.settings.simplemode.flags is mapped to system_ext
+03-05 11:14:04.824  5519  5519 I AconfigPackage: com.google.android.systemui is mapped to system_ext
+03-05 11:14:04.824  5519  5519 I AconfigPackage: com.google.android.apps.nexuslauncher is mapped to system_ext
+03-05 11:14:04.824  5519  5519 I AconfigPackage: com.android.settings.accessibility is mapped to system_ext
+03-05 11:14:04.824  5519  5519 I AconfigPackage: com.android.settings.flags is mapped to system_ext
+03-05 11:14:04.824  5519  5519 I AconfigPackage: com.google.android.apps.miphone.aiai.matchmaker.overview.ui is mapped to system_ext
+03-05 11:14:04.824  5519  5519 I AconfigPackage: com.google.android.settings.flags is mapped to system_ext
+03-05 11:14:04.824  5519  5519 I AconfigPackage: com.android.launcher3 is mapped to system_ext
+03-05 11:14:04.824  5519  5519 I AconfigPackage: com.android.wallpaper is mapped to system_ext
+03-05 11:14:04.824  5519  5519 I AconfigPackage: com.android.settings.media_drm is mapped to system_ext
+03-05 11:14:04.824  5519  5519 I AconfigPackage: com.android.systemui.accessibility.accessibilitymenu is mapped to system_ext
+03-05 11:14:04.824  5519  5519 I AconfigPackage: com.android.settings.keyboard is mapped to system_ext
+03-05 11:14:04.824  5519  5519 I AconfigPackage: com.android.server.policy.feature.flags is mapped to system_ext
+03-05 11:14:04.824  5519  5519 I AconfigPackage: com.android.settings.factory_reset is mapped to system_ext
+03-05 11:14:04.824  5519  5519 I AconfigPackage: com.google.android.haptics.flags is mapped to system_ext
+03-05 11:14:04.824  5519  5519 I AconfigPackage: com.android.permission.flags is mapped to com.android.permission
+03-05 11:14:04.825  5519  5519 I AconfigPackage: com.android.icu is mapped to com.android.i18n
+03-05 11:14:04.826  5519  5519 I AconfigPackage: com.android.appsearch.flags is mapped to com.android.appsearch
+03-05 11:14:04.828  5519  5519 I AconfigPackage: android.uprobestats.mainline.flags is mapped to com.android.uprobestats
+03-05 11:14:04.828  5519  5519 I AconfigPackage: android.provider.flags is mapped to com.android.configinfrastructure
+03-05 11:14:04.828  5519  5519 I AconfigPackage: com.android.server.deviceconfig is mapped to com.android.configinfrastructure
+03-05 11:14:04.829  5519  5519 I AconfigPackage: com.android.nfc.flags is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: android.app.admin.flags is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: android.database.sqlite is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: com.android.providers.calendar is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: com.android.server.power.feature.flags is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: com.android.media.performance.flags is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: android.app.contextualsearch.flags is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: android.app.ondeviceintelligence.flags is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: com.android.media.projection.flags is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: android.companion is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: android.service.controls.flags is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: com.android.text.flags is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: com.android.providers.contactkeys.flags is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: com.android.intentresolver is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: android.companion.virtualdevice.flags is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: android.uprobestats.flags is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: com.android.net.thread.platform.flags is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: android.view.contentprotection.flags is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: com.android.server.dreams is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: com.android.graphics.surfaceflinger.flags is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: com.android.hardware.input is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: android.sdk is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: com.android.input.flags is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: android.tracing is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: com.android.server.biometrics is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: android.view.contentcapture.flags is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: android.app.job is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: android.content.res is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: android.net.platform.flags is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: com.android.aconfig.flags is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: com.android.graphics.flags is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: android.server.app is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: android.speech.flags is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: com.android.server.stats is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: android.hardware.biometrics is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: android.car.feature is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: android.adpf is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: android.location.flags is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: com.android.settingslib.flags is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: com.android.managedprovisioning.flags is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: android.app.assist.flags is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: com.android.server.net is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: com.android.settingslib.widget.flags is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: com.android.internal.camera.flags is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: com.android.hardware.libsensor.flags is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: com.android.internal.jank is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: com.android.providers.settings is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: android.multiuser is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: com.android.server.power.optimization is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: com.android.calllogbackup is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: com.android.media.flags is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: com.android.server.flags is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: com.android.graphics.libvulkan.flags is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: android.app.appfunctions.flags is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: android.app.smartspace.flags is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: com.android.providers.contacts.flags is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: com.android.shell.flags is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: com.android.media.aaudio is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: android.hardware.radio is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: com.google.wear.services.infra.flags is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: suspend_service.flags is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: android.media.midi is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: com.android.libcore.readonly is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: com.android.settingslib.widget.selectorwithwidgetpreference.flags is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: android.service.notification is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: com.android.systemui.shared is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: android.app.jank is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: android.app.wearable is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: com.android.media.audio is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: android.service.chooser is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: com.android.server.compat is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: com.android.server.alarm is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: com.android.apex.flags is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: android.service.quickaccesswallet is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: android.app.usage is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: com.android.server.accessibility is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: android.app.supervision.flags is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: com.android.server.utils is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: android.chre.flags is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: android.content.flags is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: android.media.codec is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: com.android.internal.os is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: com.android.nfc.nci.flags is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: android.app is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: android.security.keystore2 is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: android.crashrecovery.flags is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: com.android.tradeinmode.flags is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: android.hardware.flags is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: com.android.server.telecom.flags is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: com.android.settingslib.media.flags is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: com.android.server.policy is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: android.media.audiopolicy is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: com.android.egg.flags is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: com.android.internal.compat.flags is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: android.security is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: android.service.autofill is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: com.example.android.aconfig.demo.flags is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: android.view.flags is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: android.companion.virtual.flags is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: com.android.aconfig_new_storage is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: com.android.server.feature.flags is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: com.android.systemui is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: com.android.server.power.batterysaver is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: android.widget.flags is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: com.android.media.editing.flags is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: com.android.media.codec.flags is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: com.android.server.powerstats is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: com.android.graphics.egl.flags is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: com.android.media.audioserver is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: com.android.server.deviceidle is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: android.nfc is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: android.permission.flags is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: android.service.voice.flags is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: android.content.pm is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: com.android.server.power.hint is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: android.os is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: android.service.dreams is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: com.android.graphics.libgui.flags is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: android.hardware.usb.flags is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: android.provider is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: com.android.server.job is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: com.android.internal.foldables.flags is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: com.android.internal.telephony.flags is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: android.webkit is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: android.credentials.flags is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: com.android.server.display.feature.flags is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: com.android.server.notification is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: android.appwidget.flags is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: com.android.frameworks.sensorservice.flags is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: com.android.printspooler.flags is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: com.android.window.flags is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: android.adaptiveauth is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: android.net.wifi.flags is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: android.media.tv.flags is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: com.android.server.usb.flags is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: android.os.vibrator is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: android.hardware.devicestate.feature.flags is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: com.android.server.usage is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: android.server is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: com.android.wm.shell is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: android.view.inputmethod is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: com.android.graphics.hwui.flags is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: com.android.server.backup is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: com.android.internal.pm.pkg.component.flags is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: android.view.accessibility is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: com.google.wear.sdk is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: android.media.audio is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: com.android.server.am is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: com.android.media.playback.flags is mapped to system
+03-05 11:14:04.829  5519  5519 I AconfigPackage: com.android.art.flags is mapped to com.android.art
+03-05 11:14:04.829  5519  5519 I AconfigPackage: com.android.libcore is mapped to com.android.art
+03-05 11:14:04.830  5519  5519 I AconfigPackage: com.android.media.extractor.flags is mapped to com.android.media
+03-05 11:14:04.830  5519  5519 I AconfigPackage: com.android.media.mainline.flags is mapped to com.android.media
+03-05 11:14:04.831  5519  5519 I AconfigPackage: com.android.wifi.flags is mapped to com.android.wifi
+03-05 11:14:04.832  5519  5519 I AconfigPackage: com.android.org.conscrypt.flags is mapped to com.android.conscrypt
+03-05 11:14:04.833  5519  5519 I AconfigPackage: com.android.healthfitness.flags is mapped to com.android.healthfitness
+03-05 11:14:04.834  5519  5519 I AconfigPackage: com.google.android.input.twoshay.flags is mapped to vendor
+03-05 11:14:04.834  5519  5519 I AconfigPackage: libgooglecamerahal.flags is mapped to vendor
+03-05 11:14:04.835  5519  5519 I AconfigPackage: com.android.ipsec.flags is mapped to com.android.ipsec
+03-05 11:14:04.836  5519  5519 I AconfigPackage: com.android.nfc.module.flags is mapped to com.android.nfcservices
+03-05 11:14:04.837  5519  5519 I AconfigPackage: com.android.adservices.ondevicepersonalization.flags is mapped to com.android.ondevicepersonalization
+03-05 11:14:04.838  5519  5519 I AconfigPackage: com.android.bluetooth.flags is mapped to com.android.bt
+03-05 11:14:04.839  5519  5519 I AconfigPackage: com.android.devicelock.flags is mapped to com.android.devicelock
+03-05 11:14:04.839  5519  5519 I AconfigPackage: android.os.profiling is mapped to com.android.profiling
+03-05 11:14:04.840  5519  5519 I AconfigPackage: com.android.os.statsd.flags is mapped to com.android.os.statsd
+03-05 11:14:04.841  5519  5519 I AconfigPackage: com.android.cellbroadcastreceiver.flags is mapped to com.android.cellbroadcast
+03-05 11:14:04.842  5519  5519 I AconfigPackage: com.android.adservices.flags is mapped to com.android.adservices
+03-05 11:14:04.842  5519  5519 I AconfigPackage: com.android.sdksandbox.flags is mapped to com.android.adservices
+03-05 11:14:04.842  5519  5519 I AconfigPackage: com.android.uwb.flags is mapped to com.android.uwb
+03-05 11:14:04.842  5519  5519 I AconfigPackage: com.android.ranging.flags is mapped to com.android.uwb
+03-05 11:14:04.843  5519  5519 I AconfigPackage: android.graphics.pdf.flags is mapped to com.android.mediaprovider
+03-05 11:14:04.843  5519  5519 I AconfigPackage: com.android.providers.media.flags is mapped to com.android.mediaprovider
+03-05 11:14:04.843  5519  5519 I AconfigPackage: android.graphics.pdf.flags.readonly is mapped to com.android.mediaprovider
+03-05 11:14:04.844  5519  5519 I AconfigPackage: com.android.net.ct.flags is mapped to com.android.tethering
+03-05 11:14:04.844  5519  5519 I AconfigPackage: com.android.net.flags is mapped to com.android.tethering
+03-05 11:14:04.844  5519  5519 I AconfigPackage: android.net.vcn is mapped to com.android.tethering
+03-05 11:14:04.844  5519  5519 I AconfigPackage: com.android.nearby.flags is mapped to com.android.tethering
+03-05 11:14:04.844  5519  5519 I AconfigPackage: android.net.http is mapped to com.android.tethering
+03-05 11:14:04.844  5519  5519 I AconfigPackage: com.android.net.thread.flags is mapped to com.android.tethering
+03-05 11:14:04.845  5519  5519 I AconfigPackage: com.android.system.virtualmachine.flags is mapped to com.android.virt
+03-05 11:14:04.846  5519  5519 E FeatureFlagsImplExport: android.os.flagging.AconfigStorageReadException: ERROR_PACKAGE_NOT_FOUND: package android.xr cannot be found on the device
+03-05 11:14:04.856  5519  5519 W Monkey  :  arg: "-p"
+03-05 11:14:04.856  5519  5519 W Monkey  :  arg: "com.example.magic_song"
+03-05 11:14:04.856  5519  5519 W Monkey  :  arg: "-c"
+03-05 11:14:04.856  5519  5519 W Monkey  :  arg: "android.intent.category.LAUNCHER"
+03-05 11:14:04.856  5519  5519 W Monkey  :  arg: "1"
+03-05 11:14:04.856  5519  5519 W Monkey  : data="com.example.magic_song"
+03-05 11:14:04.856  5519  5519 W Monkey  : data="android.intent.category.LAUNCHER"
+03-05 11:14:04.862   655   786 D EventHub: No input device configuration file found for device 'Monkey touch'.
+03-05 11:14:04.864   655   786 I EventHub: usingClockIoctl=true
+03-05 11:14:04.864   655   786 I EventHub: New device: id=14, fd=694, path='/dev/input/event13', name='Monkey touch', classes=TOUCH | TOUCH_MT, configuration='', keyLayout='', keyCharacterMap='', builtinKeyboard=false, 
+03-05 11:14:04.868   655   786 I InputReader: Device reconfigured: id=14, name='Monkey touch', size 1280x2856, orientation Rotation0, mode DIRECT, display id 0
+03-05 11:14:04.868   655   786 I InputReader: Device added: id=14, eventHubId=14, name='Monkey touch', descriptor='e1fe28b90f915c7d1febbd52c1ef84b3c4cbed9f',sources=TOUCHSCREEN
+--------- beginning of system
+03-05 11:14:04.892   655  1861 W ActivityManager: registerReceiverWithFeature: no app for null
+03-05 11:14:04.899   655  1187 W ActivityTaskManager: callingPackage for (uid=2000, pid=5519) has no WPC
+03-05 11:14:04.900   655  1187 I system_server: AssetManager2(0xb40075b909072118) locale list changing from [] to [en-US]
+03-05 11:14:04.901   655  1187 V GrammaticalInflectionUtils: AttributionSource: android.content.AttributionSource@eff1ba3a does not have READ_SYSTEM_GRAMMATICAL_GENDER permission.
+03-05 11:14:04.901   655  1187 W OptProp : Cannot read opt property android.window.PROPERTY_COMPAT_ALLOW_USER_ASPECT_RATIO_OVERRIDE
+03-05 11:14:04.901   655  1187 W OptProp : Cannot read opt property android.window.PROPERTY_COMPAT_ALLOW_USER_ASPECT_RATIO_FULLSCREEN_OVERRIDE
+03-05 11:14:04.901   655  1187 W OptProp : Cannot read opt property android.window.PROPERTY_COMPAT_ALLOW_RESIZEABLE_ACTIVITY_OVERRIDES
+03-05 11:14:04.901   655  1187 W OptProp : Cannot read opt property android.window.PROPERTY_COMPAT_ALLOW_MIN_ASPECT_RATIO_OVERRIDE
+03-05 11:14:04.904   655  1187 W OptProp : Cannot read opt property android.window.PROPERTY_COMPAT_ALLOW_ORIENTATION_OVERRIDE
+03-05 11:14:04.905   494   598 I BpBinder: onLastStrongRef automatically unlinking death recipients: 
+03-05 11:14:04.906   921  1047 I ndroid.systemui: AssetManager2(0xb40075b909009938) locale list changing from [] to [en-US]
+03-05 11:14:04.907   655  1861 D CompatChangeReporter: Compat change id reported: 377864165; UID 10218; state: ENABLED
+03-05 11:14:04.908   921   985 V WindowManagerShell: Transition requested (#16): android.os.BinderProxy@21207ff TransitionRequestInfo { type = OPEN, triggerTask = TaskInfo{userId=0 taskId=108 effectiveUid=10218 displayId=0 isRunning=true baseIntent=Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] flg=0x10200000 cmp=com.example.magic_song/.MainActivity } baseActivity=ComponentInfo{com.example.magic_song/com.example.magic_song.MainActivity} topActivity=ComponentInfo{com.example.magic_song/com.example.magic_song.MainActivity} origActivity=null realActivity=ComponentInfo{com.example.magic_song/com.example.magic_song.MainActivity} numActivities=1 lastActiveTime=1508556 supportsMultiWindow=true resizeMode=1 isResizeable=true minWidth=-1 minHeight=-1 defaultMinSize=220 token=WCT{android.window.IWindowContainerToken$Stub$Proxy@e5749cc} topActivityType=1 pictureInPictureParams=null shouldDockBigOverlays=false launchIntoPipHostTaskId=-1 lastParentTaskIdBeforePip=-1 displayCutoutSafeInsets=Rect(0, 156 - 0, 0) topActivityInfo=ActivityInfo{36ec415 com.example.magic_song.MainActivity} launchCookies=[] positionInParent=Point(0, 0) parentTaskId=-1 isFocused=false isVisible=false isVisibleRequested=false isTopActivityNoDisplay=false isSleeping=false locusId=null displayAreaFeatureId=1 isTopActivityTransparent=false isActivityStackTransparent=false lastNonFullscreenBounds=Rect(329, 830 - 952, 2110) capturedLink=null capturedLinkTimestamp=0 requestedVisibleTypes=-9 topActivityRequestOpenInBrowserEducationTimestamp=0 appCompatTaskInfo=AppCompatTaskInfo { topActivityInSizeCompat=false eligibleForLetterboxEducation= false isLetterboxEducationEnabled= true isLetterboxDoubleTapEnabled= false eligibleForUserAspectRatioButton= false topActivityBoundsLetterboxed= false isFromLetterboxDoubleTap= false topActivityLetterboxVerticalPosition= -1 topActivityLetterboxHorizontalPosition= -1 topActivityLetterboxWidth=-1 topActivityLetterboxHeight=-1 topActivityAppBounds=Rect(0, 0 - 1280, 2856) isUserFullscreenOverrideEnabled=false isSystemFullscreenOverrideEnabled=false hasMinAspectRatioOverride=false topActivityLetterboxBounds=null cameraCompatTaskInfo=CameraCompatTaskInfo { freeformCameraCompatMode=inactive}} topActivityMainWindowFrame=null}, pipChange = null, remoteTransition = null, displayChange = null, flags = 0, debugId = 16 }
+03-05 11:14:04.908   655  1187 I ActivityTaskManager: START u0 {act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] flg=0x10200000 cmp=com.example.magic_song/.MainActivity} with LAUNCH_SINGLE_TOP from uid 2000 (BAL_ALLOW_PERMISSION) result code=0
+03-05 11:14:04.908   921   985 D ShellSplitScreen: logExit: no-op, mLoggerSessionId is null
+03-05 11:14:04.908  5519  5519 I Monkey  : Events injected: 1
+03-05 11:14:04.910   921  1058 W HWUI    : Image decoding logging dropped!
+03-05 11:14:04.910   518   518 W IPCThreadState: Sending oneway calls to frozen process.
+03-05 11:14:04.914   494   494 I BpBinder: onLastStrongRef automatically unlinking death recipients: 
+03-05 11:14:04.915  1046  1046 W SplitSelectStateCtor: Missing session instanceIds
+03-05 11:14:04.915  1046  1046 D StatsLog: LAUNCHER_SPLIT_SELECTION_EXIT_INTERRUPTED
+03-05 11:14:04.916   921   985 D WindowManagerShell: setLauncherKeepClearAreaHeight: visible=false, height=603
+03-05 11:14:04.928   921   921 W DSRotLockSettingsMngr: Setting is ignored, but no fallback was specified.
+03-05 11:14:04.946  5519  5519 I Monkey  : ## Network stats: elapsed time=44ms (0ms mobile, 0ms wifi, 44ms not connected)
+03-05 11:14:04.952  5519  5519 I app_process: System.exit called, status: 0
+03-05 11:14:04.952  5519  5519 I AndroidRuntime: VM exiting with result code 0.
+03-05 11:14:04.956   655   704 W IPCThreadState: Sending oneway calls to frozen process.
+03-05 11:14:04.956   655   704 V GrammaticalInflectionUtils: AttributionSource: android.content.AttributionSource@eff1ba3a does not have READ_SYSTEM_GRAMMATICAL_GENDER permission.
+03-05 11:14:04.959   655   878 D BackgroundInstallControlService: Package event received: 0
+03-05 11:14:04.960   655   786 I EventHub: Removing device Monkey touch due to epoll hang-up event.
+03-05 11:14:04.960   655   786 I EventHub: Removed device: path=/dev/input/event13 name=Monkey touch id=14 fd=694 classes=TOUCH | TOUCH_MT
+03-05 11:14:04.961   921   921 W DSRotLockSettingsMngr: Setting is ignored, but no fallback was specified.
+03-05 11:14:05.007   655   701 V WindowManager: Sent Transition (#16) createdAt=03-05 11:14:04.902 via request=TransitionRequestInfo { type = OPEN, triggerTask = TaskInfo{userId=0 taskId=108 effectiveUid=10218 displayId=0 isRunning=true baseIntent=Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] flg=0x10200000 cmp=com.example.magic_song/.MainActivity } baseActivity=ComponentInfo{com.example.magic_song/com.example.magic_song.MainActivity} topActivity=ComponentInfo{com.example.magic_song/com.example.magic_song.MainActivity} origActivity=null realActivity=ComponentInfo{com.example.magic_song/com.example.magic_song.MainActivity} numActivities=1 lastActiveTime=1508556 supportsMultiWindow=true resizeMode=1 isResizeable=true minWidth=-1 minHeight=-1 defaultMinSize=220 token=WCT{RemoteToken{c9bc4d6 Task{938f814 #108 type=standard I=com.example.magic_song/.MainActivity}}} topActivityType=1 pictureInPictureParams=null shouldDockBigOverlays=false launchIntoPipHostTaskId=-1 lastParentTaskIdBeforePip=-1 displayCutoutSafeInsets=Rect(0, 156 - 0, 0) topActivityInfo=ActivityInfo{7d03357 com.example.magic_song.MainActivity} launchCookies=[] positionInParent=Point(0, 0) parentTaskId=-1 isFocused=false isVisible=false isVisibleRequested=false isTopActivityNoDisplay=false isSleeping=false locusId=null displayAreaFeatureId=1 isTopActivityTransparent=false isActivityStackTransparent=false lastNonFullscreenBounds=Rect(329, 830 - 952, 2110) capturedLink=null capturedLinkTimestamp=0 requestedVisibleTypes=-9 topActivityRequestOpenInBrowserEducationTimestamp=0 appCompatTaskInfo=AppCompatTaskInfo { topActivityInSizeCompat=false eligibleForLetterboxEducation= false isLetterboxEducationEnabled= true isLetterboxDoubleTapEnabled= false eligibleForUserAspectRatioButton= false topActivityBoundsLetterboxed= false isFromLetterboxDoubleTap= false topActivityLetterboxVerticalPosition= -1 topActivityLetterboxHorizontalPosition= -1 topActivityLetterboxWidth=-1 topActivityLetterboxHeight=-1 topActivityAppBounds=Rect(0, 0 - 1280, 2856) isUserFullscreenOverrideEnabled=false isSystemFullscreenOverrideEnabled=false hasMinAspectRatioOverride=false topActivityLetterboxBounds=null cameraCompatTaskInfo=CameraCompatTaskInfo { freeformCameraCompatMode=inactive}} topActivityMainWindowFrame=null}, pipChange = null, remoteTransition = null, displayChange = null, flags = 0, debugId = 16 }
+03-05 11:14:05.007   655   701 V WindowManager:     startWCT=WindowContainerTransaction { changes= {} hops= [] errorCallbackToken=null taskFragmentOrganizer=null }
+03-05 11:14:05.007   655   704 E EventHub: Invalid device id=14 provided to isDeviceEnabled
+03-05 11:14:05.007   655   786 I InputReader: Device removed: id=14, eventHubId=14, name='Monkey touch', descriptor='e1fe28b90f915c7d1febbd52c1ef84b3c4cbed9f', sources=TOUCHSCREEN
+03-05 11:14:05.007   655   701 V WindowManager:     info={id=16 t=OPEN f=0x0 trk=0 r=[0@Point(0, 0)] c=[
+03-05 11:14:05.007   655   701 V WindowManager:         {WCT{RemoteToken{c9bc4d6 Task{938f814 #108 type=standard I=com.example.magic_song/.MainActivity}}} m=OPEN f=NONE leash=Surface(name=Task=108)/@0x8140098 sb=Rect(0, 0 - 1280, 2856) eb=Rect(0, 0 - 1280, 2856) epz=Point(1280, 2856) d=0 taskParent=-1},
+03-05 11:14:05.007   655   701 V WindowManager:         {WCT{RemoteToken{77017ea Task{178d7e1 #1 type=home}}} m=TO_BACK f=SHOW_WALLPAPER leash=Surface(name=Task=1)/@0x46909e9 sb=Rect(0, 0 - 1280, 2856) eb=Rect(0, 0 - 1280, 2856) epz=Point(1280, 2856) d=0 taskParent=-1},
+03-05 11:14:05.007   655   701 V WindowManager:         {m=TO_BACK f=IS_WALLPAPER leash=Surface(name=WallpaperWindowToken{b635a6a showWhenLocked=false})/@0x64b9cb3 sb=Rect(0, 0 - 1280, 2856) eb=Rect(0, 0 - 1280, 2856) epz=Point(1280, 2856) d=0}
+03-05 11:14:05.007   655   701 V WindowManager:     ]}
+03-05 11:14:05.007   921  1339 V WindowManagerShell: onTransitionReady(transaction=2813203579420)
+03-05 11:14:05.008   921   985 V WindowManagerShell: onTransitionReady (#16) android.os.BinderProxy@21207ff: {id=16 t=OPEN f=0x0 trk=0 r=[0@Point(0, 0)] c=[
+03-05 11:14:05.008   921   985 V WindowManagerShell:         {m=OPEN f=NONE leash=Surface(name=Task=108)/@0x73c5b78 sb=Rect(0, 0 - 1280, 2856) eb=Rect(0, 0 - 1280, 2856) epz=Point(1280, 2856) d=0 taskParent=-1},
+03-05 11:14:05.008   921   985 V WindowManagerShell:         {m=TO_BACK f=SHOW_WALLPAPER leash=Surface(name=Task=1)/@0xf61b251 sb=Rect(0, 0 - 1280, 2856) eb=Rect(0, 0 - 1280, 2856) epz=Point(1280, 2856) d=0 taskParent=-1},
+03-05 11:14:05.008   921   985 V WindowManagerShell:         {m=TO_BACK f=IS_WALLPAPER leash=Surface(name=WallpaperWindowToken{b635a6a showWhenLocked=false})/@0xc93cab6 sb=Rect(0, 0 - 1280, 2856) eb=Rect(0, 0 - 1280, 2856) epz=Point(1280, 2856) d=0}
+03-05 11:14:05.008   921   985 V WindowManagerShell:     ]}
+03-05 11:14:05.008   921   985 V WindowManagerShell: Playing animation for (#16) android.os.BinderProxy@21207ff@0
+03-05 11:14:05.008   921   985 V ShellRecents: RecentsTransitionHandler.startAnimation: no controller found
+03-05 11:14:05.008   921   985 V WindowManagerShell: Transition doesn't have explicit remote, search filters for match for {id=16 t=OPEN f=0x0 trk=0 r=[0@Point(0, 0)] c=[{m=OPEN f=NONE leash=Surface(name=Task=108)/@0x73c5b78 sb=Rect(0, 0 - 1280, 2856) eb=Rect(0, 0 - 1280, 2856) epz=Point(1280, 2856) d=0 taskParent=-1},{m=TO_BACK f=SHOW_WALLPAPER leash=Surface(name=Task=1)/@0xf61b251 sb=Rect(0, 0 - 1280, 2856) eb=Rect(0, 0 - 1280, 2856) epz=Point(1280, 2856) d=0 taskParent=-1},{m=TO_BACK f=IS_WALLPAPER leash=Surface(name=WallpaperWindowToken{b635a6a showWhenLocked=false})/@0xc93cab6 sb=Rect(0, 0 - 1280, 2856) eb=Rect(0, 0 - 1280, 2856) epz=Point(1280, 2856) d=0}]}
+03-05 11:14:05.009   921   985 V WindowManagerShell:  Checking filter Pair{{types=[] flags=0x0] notFlags=0x0 checks=[{atype=undefined independent=true modes=[CLOSE,TO_BACK] flags=IN_TASK_WITH_EMBEDDED_ACTIVITY mustBeTask=false order=ANY topActivity=null launchCookie=null taskFragmentToken=android.os.BinderProxy@3eea85e windowingMode=undefined}]} RemoteTransition { remoteTransition = android.window.IRemoteTransition$Stub$Proxy@a9e843f, appThread = android.app.IApplicationThread$Stub$Proxy@983b10c, debugName = overlayBackTransition }}
+03-05 11:14:05.009   921   985 V WindowManagerShell:  Checking filter Pair{{types=[] flags=0x0] notFlags=0x0 checks=[{atype=dream independent=true modes=[OPEN,TO_FRONT] flags=NONE mustBeTask=false order=ANY topActivity=null launchCookie=null windowingMode=undefined},{atype=home independent=true modes=[CLOSE,TO_BACK] flags=NONE mustBeTask=false order=ANY topActivity=null launchCookie=null windowingMode=undefined}]} RemoteTransition { remoteTransition = android.window.IRemoteTransition$Stub$Proxy@84c3a55, appThread = android.app.IApplicationThread$Stub$Proxy@4f8ec6a, debugName = LauncherToDream }}
+03-05 11:14:05.009   921   985 V WindowManagerShell:  Checking filter Pair{{types=[] flags=0x0] notFlags=0x100 checks=[{atype=home independent=true modes=[OPEN,TO_FRONT] flags=NONE mustBeTask=false order=TOP topActivity=ComponentInfo{com.google.android.apps.nexuslauncher/com.google.android.apps.nexuslauncher.NexusLauncherActivity} launchCookie=null windowingMode=undefined},{atype=standard independent=true modes=[CLOSE,TO_BACK] flags=NONE mustBeTask=false order=ANY topActivity=null launchCookie=null windowingMode=undefined},{NOT atype=undefined independent=true modes=[] flags=NONE mustBeTask=true order=ANY topActivity=null launchCookie=null customAnim=true windowingMode=undefined}]} RemoteTransition { remoteTransition = android.window.IRemoteTransition$Stub$Proxy@a01255b, appThread = android.app.IApplicationThread$Stub$Proxy@b40d1f8, debugName = QuickstepLaunchHome }}
+03-05 11:14:05.009   921   985 V WindowManagerShell:  Delegate animation for (#16) to null
+03-05 11:14:05.009   499  5520 E adbd    : error reading output FD 33: Connection reset by peer
+03-05 11:14:05.009   446   446 D Zygote  : Forked child process 5532
+03-05 11:14:05.009   655   711 W ActivityManager: Slow operation: 53ms so far, now at startProcess: returned from zygote!
+03-05 11:14:05.010   921   985 V WindowManagerShell: start default transition animation, info = {id=16 t=OPEN f=0x0 trk=0 r=[0@Point(0, 0)] c=[{m=OPEN f=NONE leash=Surface(name=Task=108)/@0x73c5b78 sb=Rect(0, 0 - 1280, 2856) eb=Rect(0, 0 - 1280, 2856) epz=Point(1280, 2856) d=0 taskParent=-1},{m=TO_BACK f=SHOW_WALLPAPER leash=Surface(name=Task=1)/@0xf61b251 sb=Rect(0, 0 - 1280, 2856) eb=Rect(0, 0 - 1280, 2856) epz=Point(1280, 2856) d=0 taskParent=-1},{m=TO_BACK f=IS_WALLPAPER leash=Surface(name=WallpaperWindowToken{b635a6a showWhenLocked=false})/@0xc93cab6 sb=Rect(0, 0 - 1280, 2856) eb=Rect(0, 0 - 1280, 2856) epz=Point(1280, 2856) d=0}]}
+03-05 11:14:05.010   655   711 W ActivityManager: Slow operation: 54ms so far, now at startProcess: done updating battery stats
+03-05 11:14:05.010   655   711 W ActivityManager: Slow operation: 54ms so far, now at startProcess: building log message
+03-05 11:14:05.010   655   711 I ActivityManager: Start proc 5532:com.example.magic_song/u0a218 for next-top-activity {com.example.magic_song/com.example.magic_song.MainActivity}
+03-05 11:14:05.010   655   711 W ActivityManager: Slow operation: 54ms so far, now at startProcess: starting to update pids map
+03-05 11:14:05.011   921   985 V WindowManagerShell: loadAnimation: anim=android.view.animation.AnimationSet@b78a2af animAttr=0x13 type=OPEN isEntrance=false
+03-05 11:14:05.011  1762  1762 W NotificationCenter: NotificationCenter$NotificationQueue.notifyPendingNotificationsOnExecutor():877 Heavy notify work detected on UI thread: [mpi->hmi, mpi->ioz, mpi->hmi] takes 40ms
+03-05 11:14:05.011  1762  1762 I PkDeviceHelper: PkDeviceHelper.refreshDevices():87 refreshing devices
+03-05 11:14:05.011  1762  1762 I PkDeviceHelper: PkDeviceHelper.addDevice():125 device qwerty2 added
+03-05 11:14:05.013   921   985 V WindowManagerShell: loadAnimation: anim=android.view.animation.AnimationSet@436bacb animAttr=0x12 type=OPEN isEntrance=true
+03-05 11:14:05.014   921   985 V WindowManagerShell:  animated by com.android.wm.shell.transition.DefaultTransitionHandler@40076d9
+03-05 11:14:05.033   655   711 I ActivityManager: ProcessObserver broadcast disabled
+03-05 11:14:05.033   655   711 W ActivityManager: Slow operation: 77ms so far, now at startProcess: done updating pids map
+03-05 11:14:05.033   655   786 E WindowManager: Display reconfigured outside of a transition: Display{#0 state=ON size=1280x2856 ROTATION_0}
+03-05 11:14:05.035   655   786 I EventHub: Removing device '/dev/input/event13' due to inotify event
+03-05 11:14:05.037  1762  1762 W NotificationCenter: NotificationCenter$NotificationQueue.notifyPendingNotificationsOnExecutor():877 Heavy notify work detected on UI thread: [mpi->kmj, mpi->okg] takes 26ms
+03-05 11:14:05.043   655   704 W IPCThreadState: Sending oneway calls to frozen process.
+03-05 11:14:05.044   655   704 W IPCThreadState: Sending oneway calls to frozen process.
+03-05 11:14:05.044   655   704 W IPCThreadState: Sending oneway calls to frozen process.
+03-05 11:14:05.044   655   704 W IPCThreadState: Sending oneway calls to frozen process.
+03-05 11:14:05.045   655   704 W IPCThreadState: Sending oneway calls to frozen process.
+03-05 11:14:05.045   655   704 W IPCThreadState: Sending oneway calls to frozen process.
+03-05 11:14:05.045   655   704 W IPCThreadState: Sending oneway calls to frozen process.
+03-05 11:14:05.045   655   704 W IPCThreadState: Sending oneway calls to frozen process.
+03-05 11:14:05.045   655   704 W IPCThreadState: Sending oneway calls to frozen process.
+03-05 11:14:05.045   655   704 W IPCThreadState: Sending oneway calls to frozen process.
+03-05 11:14:05.045   655   704 W IPCThreadState: Sending oneway calls to frozen process.
+03-05 11:14:05.046   655   704 W IPCThreadState: Sending oneway calls to frozen process.
+03-05 11:14:05.046   655   704 W IPCThreadState: Sending oneway calls to frozen process.
+03-05 11:14:05.046   655   704 W IPCThreadState: Sending oneway calls to frozen process.
+03-05 11:14:05.046   655   704 W IPCThreadState: Sending oneway calls to frozen process.
+03-05 11:14:05.046   655   704 W IPCThreadState: Sending oneway calls to frozen process.
+03-05 11:14:05.046   655   704 W IPCThreadState: Sending oneway calls to frozen process.
+03-05 11:14:05.047   655   704 W IPCThreadState: Sending oneway calls to frozen process.
+03-05 11:14:05.047   655   704 W IPCThreadState: Sending oneway calls to frozen process.
+03-05 11:14:05.047   655   704 W IPCThreadState: Sending oneway calls to frozen process.
+03-05 11:14:05.047   655   704 W IPCThreadState: Sending oneway calls to frozen process.
+03-05 11:14:05.047   655   704 W IPCThreadState: Sending oneway calls to frozen process.
+03-05 11:14:05.047   655   704 W IPCThreadState: Sending oneway calls to frozen process.
+03-05 11:14:05.047   655   704 W IPCThreadState: Sending oneway calls to frozen process.
+03-05 11:14:05.048   655   704 W IPCThreadState: Sending oneway calls to frozen process.
+03-05 11:14:05.048   655   704 W IPCThreadState: Sending oneway calls to frozen process.
+03-05 11:14:05.048   655   704 W IPCThreadState: Sending oneway calls to frozen process.
+03-05 11:14:05.048   655   704 W IPCThreadState: Sending oneway calls to frozen process.
+03-05 11:14:05.050   655   704 W IPCThreadState: Sending oneway calls to frozen process.
+03-05 11:14:05.050   655   704 W IPCThreadState: Sending oneway calls to frozen process.
+03-05 11:14:05.050   655   704 W IPCThreadState: Sending oneway calls to frozen process.
+03-05 11:14:05.050   655   704 W IPCThreadState: Sending oneway calls to frozen process.
+03-05 11:14:05.050   655   704 W IPCThreadState: Sending oneway calls to frozen process.
+03-05 11:14:05.050   655   704 W IPCThreadState: Sending oneway calls to frozen process.
+03-05 11:14:05.050   655   704 W IPCThreadState: Sending oneway calls to frozen process.
+03-05 11:14:05.051   655   704 W IPCThreadState: Sending oneway calls to frozen process.
+03-05 11:14:05.051   655   704 W IPCThreadState: Sending oneway calls to frozen process.
+03-05 11:14:05.051   655   704 W IPCThreadState: Sending oneway calls to frozen process.
+03-05 11:14:05.051   655   704 W IPCThreadState: Sending oneway calls to frozen process.
+03-05 11:14:05.051   655   704 W IPCThreadState: Sending oneway calls to frozen process.
+03-05 11:14:05.051   655   704 W IPCThreadState: Sending oneway calls to frozen process.
+03-05 11:14:05.051   655   704 W IPCThreadState: Sending oneway calls to frozen process.
+03-05 11:14:05.051   655   704 W IPCThreadState: Sending oneway calls to frozen process.
+03-05 11:14:05.051   655   704 W IPCThreadState: Sending oneway calls to frozen process.
+03-05 11:14:05.051   655   704 W IPCThreadState: Sending oneway calls to frozen process.
+03-05 11:14:05.051   655   704 W IPCThreadState: Sending oneway calls to frozen process.
+03-05 11:14:05.051   655   704 W IPCThreadState: Sending oneway calls to frozen process.
+03-05 11:14:05.051   655   704 W IPCThreadState: Sending oneway calls to frozen process.
+03-05 11:14:05.051   655   704 W IPCThreadState: Sending oneway calls to frozen process.
+03-05 11:14:05.051   655   704 W IPCThreadState: Sending oneway calls to frozen process.
+03-05 11:14:05.051   655   704 W IPCThreadState: Sending oneway calls to frozen process.
+03-05 11:14:05.054   655   704 W IPCThreadState: Sending oneway calls to frozen process.
+03-05 11:14:05.058  1762  1762 I PkDeviceHelper: PkDeviceHelper.refreshDevices():87 refreshing devices
+03-05 11:14:05.058  1762  1762 I PkDeviceHelper: PkDeviceHelper.addDevice():125 device qwerty2 added
+03-05 11:14:05.058   655   704 I system_server: AssetManager2(0xb40075b909074058) locale list changing from [] to [en-US]
+03-05 11:14:05.060   921   921 D NavigationModeController: getCurrentUserContext: contextUser=0 currentUser=0
+03-05 11:14:05.061   655   704 W PermissionService: getPermissionFlags: Unknown user -1
+03-05 11:14:05.061   655   704 W PermissionService: getPermissionFlags: Unknown user -1
+03-05 11:14:05.067  1046  1046 D TouchInteractionService: disposeEventHandlers: Reason: Initializing input monitor due to: onTrackpadConnected() instance=195125292
+03-05 11:14:05.067  1046  1046 D InputMonitorCompat: Input event receiver for monitor (swipe-up-disp0) disposed
+03-05 11:14:05.067  1046  1046 D InputMonitorCompat: Input monitor (swipe-up-disp0) disposed
+03-05 11:14:05.068  1046  1046 D InputMonitorCompat: Input monitor (swipe-up-disp0) created
+03-05 11:14:05.068  1046  1046 D InputMonitorCompat: Input event receiver for monitor (swipe-up-disp0) created
+03-05 11:14:05.077  5532  5532 I mple.magic_song: Using CollectorTypeCMC GC.
+03-05 11:14:05.079  5532  5532 E mple.magic_song: Not starting debugger since process cannot load the jdwp agent.
+03-05 11:14:05.081   655  2067 W HWUI    : Image decoding logging dropped!
+03-05 11:14:05.081  5532  5532 D nativeloader: Load libframework-connectivity-tiramisu-jni.so using APEX ns com_android_tethering for caller /apex/com.android.tethering/javalib/framework-connectivity-t.jar: ok
+03-05 11:14:05.087   655  5543 W HWUI    : Failed to choose config with EGL_SWAP_BEHAVIOR_PRESERVED, retrying without...
+03-05 11:14:05.087   655  5543 W HWUI    : Failed to initialize 101010-2 format, error = EGL_SUCCESS
+03-05 11:14:05.108   655   878 D BackgroundInstallControlService: Package event received: 0
+03-05 11:14:05.116   655   766 D ActivityManager: sync unfroze 4223 com.android.vending for 6
+03-05 11:14:05.116   655  2067 W HWUI    : Image decoding logging dropped!
+03-05 11:14:05.124  4223  4223 I Finsky  : [2] Memory trim requested to level 40
+03-05 11:14:05.126  4223  4223 I Finsky  : [2] Flushing in-memory image cache
+03-05 11:14:05.129  5532  5532 D ApplicationLoaders: Returning zygote-cached class loader: /system_ext/framework/androidx.window.extensions.jar
+03-05 11:14:05.129  5532  5532 D ApplicationLoaders: Returning zygote-cached class loader: /system_ext/framework/androidx.window.sidecar.jar
+03-05 11:14:05.130  5532  5532 D nativeloader: Configuring clns-9 for other apk /data/app/~~k_SvZTB-y6PMaYIi8rEY6w==/com.example.magic_song-qEjA0KT3m88kaFtPrpYqJw==/base.apk. target_sdk_version=36, uses_libraries=, library_path=/data/app/~~k_SvZTB-y6PMaYIi8rEY6w==/com.example.magic_song-qEjA0KT3m88kaFtPrpYqJw==/lib/arm64:/data/app/~~k_SvZTB-y6PMaYIi8rEY6w==/com.example.magic_song-qEjA0KT3m88kaFtPrpYqJw==/base.apk!/lib/arm64-v8a, permitted_path=/data:/mnt/expand:/data/user/0/com.example.magic_song
+03-05 11:14:05.135   655  1187 W ProcessStats: Tracking association SourceState{e13f64c system/1000 ImpBg #3076} whose proc state 6 is better than process ProcessState{8485b8 com.android.vending/10144 pkg=com.android.vending} proc state 14 (40 skipped)
+03-05 11:14:05.135  5532  5532 I mple.magic_song: AssetManager2(0xb40075b908fa9498) locale list changing from [] to [en-US]
+03-05 11:14:05.135  4223  4223 I Finsky  : [2] SCH: job service start with id 9783.
+03-05 11:14:05.139  5532  5532 V GraphicsEnvironment: Currently set values for:
+03-05 11:14:05.139  5532  5532 V GraphicsEnvironment:   angle_gl_driver_selection_pkgs=[]
+03-05 11:14:05.139  5532  5532 V GraphicsEnvironment:   angle_gl_driver_selection_values=[]
+03-05 11:14:05.139  5532  5532 V GraphicsEnvironment: com.example.magic_song is not listed in per-application setting
+03-05 11:14:05.139  5532  5532 V GraphicsEnvironment: ANGLE allowlist from config: com.dreamgames.royalmatch com.dts.freefiremax com.dxx.firenow com.gramgames.mergedragons com.ludo.king com.mojang.minecraftpe com.my.defense com.nintendo.zaka com.os.airforce com.playrix.fishdomdd.gplay io.teslatech.callbreak jp.konami.prospia net.peakgames.toonblast
+03-05 11:14:05.139  5532  5532 V GraphicsEnvironment: com.example.magic_song is not listed in ANGLE allowlist or settings, returning default
+03-05 11:14:05.139  5532  5532 V GraphicsEnvironment: Neither updatable production driver nor prerelease driver is supported.
+03-05 11:14:05.141  4223  5483 I Finsky  : [149] SCH: Satisfied jobs for 9783 are: 12-1
+03-05 11:14:05.142  4223  5549 I Finsky  : [156] SCH: Job 12-1 starting
+03-05 11:14:05.143  4223  4223 I Finsky  : [2] WM::SCH: Logging work start for 12-1
+03-05 11:14:05.144  4223  4223 I Finsky  : [2] [ContentSync] job started
+03-05 11:14:05.145   655  1187 W OptProp : Cannot read opt property android.window.PROPERTY_COMPAT_ENABLE_FAKE_FOCUS
+03-05 11:14:05.146   655   878 D BackgroundInstallControlService: Package event received: 0
+03-05 11:14:05.147   655   878 D BackgroundInstallControlService: Package event received: 0
+03-05 11:14:05.151  5532  5551 I DisplayManager: Choreographer implicitly registered for the refresh rate.
+03-05 11:14:05.152  5532  5532 I mple.magic_song: AssetManager2(0xb40075b908fa5618) locale list changing from [] to [en-US]
+03-05 11:14:05.153  5532  5532 E ashmem  : Pinning is deprecated since Android Q. Please use trim or other methods.
+03-05 11:14:05.176  5532  5553 D nativeloader: Load /data/app/~~k_SvZTB-y6PMaYIi8rEY6w==/com.example.magic_song-qEjA0KT3m88kaFtPrpYqJw==/base.apk!/lib/arm64-v8a/libflutter.so using class loader ns clns-9 (caller=/data/app/~~k_SvZTB-y6PMaYIi8rEY6w==/com.example.magic_song-qEjA0KT3m88kaFtPrpYqJw==/base.apk): ok
+03-05 11:14:05.180   655  1187 D FileUtils: Rounded bytes from 3160129536 to 4000000000
+03-05 11:14:05.188  5532  5532 I mple.magic_song: AssetManager2(0xb40075b908fafbb8) locale list changing from [] to [en-US]
+03-05 11:14:05.192  5532  5532 W mple.magic_song: type=1400 audit(0.0:56): avc:  denied  { read } for  name="max_map_count" dev="proc" ino=18631 scontext=u:r:untrusted_app:s0:c218,c256,c512,c768 tcontext=u:object_r:proc_max_map_count:s0 tclass=file permissive=0 app=com.example.magic_song
+03-05 11:14:05.200  5532  5551 I EGL_emulation: Opening libGLESv1_CM_emulation.so
+03-05 11:14:05.201  5532  5551 I EGL_emulation: Opening libGLESv2_emulation.so
+03-05 11:14:05.204  5532  5551 W HWUI    : Failed to choose config with EGL_SWAP_BEHAVIOR_PRESERVED, retrying without...
+03-05 11:14:05.204  5532  5551 W HWUI    : Failed to initialize 101010-2 format, error = EGL_SUCCESS
+03-05 11:14:05.208  5532  5532 D DesktopModeFlags: Toggle override initialized to: OVERRIDE_UNSET
+03-05 11:14:05.221  4223  4223 W Finsky  : [2] STU: Failed to get storage stats for package 'com.android.hardware.threadnetwork' (1601: Error getting stats: android.content.pm.PackageManager.NameNotFoundException)
+03-05 11:14:05.227  5532  5557 I flutter : [IMPORTANT:flutter/shell/platform/android/android_context_gl_impeller.cc(104)] Using the Impeller rendering backend (OpenGLES).
+03-05 11:14:05.237  4223  4223 W Finsky  : [2] STU: Failed to get storage stats for package 'com.google.android.uprobestats' (1601: Error getting stats: android.content.pm.PackageManager.NameNotFoundException)
+03-05 11:14:05.271   655   655 W NotificationHistory: Attempted to add notif for locked/gone/disabled user 0
+03-05 11:14:05.272   655   878 D BackgroundInstallControlService: Package event received: 0
+03-05 11:14:05.279  1759  2366 W AiAiEcho: LyftNotificationParser Ridesharing ETA not enabled
+03-05 11:14:05.279  1759  2366 I AiAiEcho: SmartspaceNotificationPredictor no parser can handle this notification or notification is invalid
+03-05 11:14:05.284  1046  1046 I NotificationListener: received notification removed event - android#UserHandle{-1},category=-1
+03-05 11:14:05.289  4223  4223 W Finsky  : [2] STU: Failed to get storage stats for package 'com.android.hardware.vibrator' (1601: Error getting stats: android.content.pm.PackageManager.NameNotFoundException)
+03-05 11:14:05.297   921   921 I ndroid.systemui: AssetManager2(0xb40075b909003e98) locale list changing from [] to [en-US]
+03-05 11:14:05.303   921   985 V WindowManagerShell: Transition animation finished (aborted=false), notifying core (#16) android.os.BinderProxy@21207ff@0
+03-05 11:14:05.305   921   985 V WindowManagerShell: Track 0 became idle
+03-05 11:14:05.305   921   985 V WindowManagerShell: All active transition animations finished
+03-05 11:14:05.305   655   701 V WindowManager: Finish Transition (#16): created at 03-05 11:14:04.902 collect-started=0.034ms request-sent=5.401ms started=7.844ms ready=93.931ms sent=104.444ms commit=9.558ms finished=402.702ms
+03-05 11:14:05.306  1046  1046 D VRI[NexusLauncherActivity]: visibilityChanged oldVisibility=true newVisibility=false
+03-05 11:14:05.309   921   921 W HWUI    : Image decoding logging dropped!
+03-05 11:14:05.324  1046  1046 D NexusLauncherModelDelegate: notifySmartspaceEvent: SmartspaceTargetEvent{mSmartspaceTarget=null, mSmartspaceActionId='null', mEventType=7}
+03-05 11:14:05.332  4223  4226 W android.vending: Missing inline cache for java.lang.Object nyq.apply(java.lang.Object)
+03-05 11:14:05.332  4223  4226 W android.vending: Missing inline cache for java.lang.Object nyq.apply(java.lang.Object)
+03-05 11:14:05.332  4223  4226 W android.vending: Missing inline cache for java.lang.Object nyq.apply(java.lang.Object)
+03-05 11:14:05.332  4223  4226 W android.vending: Missing inline cache for java.lang.Object nyq.apply(java.lang.Object)
+03-05 11:14:05.332  4223  4226 W android.vending: Missing inline cache for java.lang.Object nyq.apply(java.lang.Object)
+03-05 11:14:05.332  4223  4226 W android.vending: Missing inline cache for java.lang.Object nyq.apply(java.lang.Object)
+03-05 11:14:05.332  4223  4226 W android.vending: Missing inline cache for java.lang.Object nyq.apply(java.lang.Object)
+03-05 11:14:05.332  4223  4226 W android.vending: Missing inline cache for java.lang.Object nyq.apply(java.lang.Object)
+03-05 11:14:05.333  4223  4226 W android.vending: Missing inline cache for java.lang.Object nyq.apply(java.lang.Object)
+03-05 11:14:05.333  4223  4226 W android.vending: Missing inline cache for java.lang.Object nyq.apply(java.lang.Object)
+03-05 11:14:05.337  4223  4223 W Finsky  : [2] STU: Failed to get storage stats for package 'com.google.android.uwb' (1601: Error getting stats: android.content.pm.PackageManager.NameNotFoundException)
+03-05 11:14:05.338  4223  4223 W Finsky  : [2] STU: Failed to get storage stats for package 'com.google.android.bt' (1601: Error getting stats: android.content.pm.PackageManager.NameNotFoundException)
+03-05 11:14:05.341  4223  4223 W Finsky  : [2] STU: Failed to get storage stats for package 'com.google.android.widevine.nonupdatable' (1601: Error getting stats: android.content.pm.PackageManager.NameNotFoundException)
+03-05 11:14:05.343  4223  4223 W Finsky  : [2] STU: Failed to get storage stats for package 'com.google.android.tzdata6' (1601: Error getting stats: android.content.pm.PackageManager.NameNotFoundException)
+03-05 11:14:05.354  4223  4223 W Finsky  : [2] STU: Failed to get storage stats for package 'com.google.android.permission' (1601: Error getting stats: android.content.pm.PackageManager.NameNotFoundException)
+03-05 11:14:05.370   921  2847 W HWUI    : Failed to choose config with EGL_SWAP_BEHAVIOR_PRESERVED, retrying without...
+03-05 11:14:05.371   921  2847 W HWUI    : Failed to initialize 101010-2 format, error = EGL_SUCCESS
+03-05 11:14:05.374   921  1283 W HWUI    : Image decoding logging dropped!
+03-05 11:14:05.376  4223  4223 W Finsky  : [2] STU: Failed to get storage stats for package 'com.google.android.wifi' (1601: Error getting stats: android.content.pm.PackageManager.NameNotFoundException)
+03-05 11:14:05.379  4223  4223 W Finsky  : [2] STU: Failed to get storage stats for package 'com.android.hardware.contexthub' (1601: Error getting stats: android.content.pm.PackageManager.NameNotFoundException)
+03-05 11:14:05.379  4223  4223 W Finsky  : [2] STU: Failed to get storage stats for package 'com.android.hardware.authsecret' (1601: Error getting stats: android.content.pm.PackageManager.NameNotFoundException)
+03-05 11:14:05.381  4223  4223 W Finsky  : [2] STU: Failed to get storage stats for package 'com.android.apex.cts.shim' (1601: Error getting stats: android.content.pm.PackageManager.NameNotFoundException)
+03-05 11:14:05.384  4223  4223 W Finsky  : [2] STU: Failed to get storage stats for package 'com.android.hardware.thermal' (1601: Error getting stats: android.content.pm.PackageManager.NameNotFoundException)
+03-05 11:14:05.386   921  1283 W HWUI    : Image decoding logging dropped!
+03-05 11:14:05.397  4223  4223 W Finsky  : [2] STU: Failed to get storage stats for package 'com.google.android.appsearch' (1601: Error getting stats: android.content.pm.PackageManager.NameNotFoundException)
+03-05 11:14:05.397  4223  4223 W Finsky  : [2] STU: Failed to get storage stats for package 'com.google.android.media.swcodec' (1601: Error getting stats: android.content.pm.PackageManager.NameNotFoundException)
+03-05 11:14:05.398  4223  4223 W Finsky  : [2] STU: Failed to get storage stats for package 'com.google.android.art' (1601: Error getting stats: android.content.pm.PackageManager.NameNotFoundException)
+03-05 11:14:05.404  4223  4223 W Finsky  : [2] STU: Failed to get storage stats for package 'com.google.android.profiling' (1601: Error getting stats: android.content.pm.PackageManager.NameNotFoundException)
+03-05 11:14:05.415  4223  4223 W Finsky  : [2] STU: Failed to get storage stats for package 'com.google.android.mediaprovider' (1601: Error getting stats: android.content.pm.PackageManager.NameNotFoundException)
+03-05 11:14:05.422  4223  4223 W Finsky  : [2] STU: Failed to get storage stats for package 'com.android.hardware.uwb' (1601: Error getting stats: android.content.pm.PackageManager.NameNotFoundException)
+03-05 11:14:05.424  4223  4223 W Finsky  : [2] STU: Failed to get storage stats for package 'com.android.virt' (1601: Error getting stats: android.content.pm.PackageManager.NameNotFoundException)
+03-05 11:14:05.424  4223  4223 W Finsky  : [2] STU: Failed to get storage stats for package 'com.android.hardware.neuralnetworks' (1601: Error getting stats: android.content.pm.PackageManager.NameNotFoundException)
+03-05 11:14:05.424  4223  4223 W Finsky  : [2] STU: Failed to get storage stats for package 'com.google.android.crashrecovery' (1601: Error getting stats: android.content.pm.PackageManager.NameNotFoundException)
+03-05 11:14:05.425  4223  4223 W Finsky  : [2] STU: Failed to get storage stats for package 'com.google.android.adbd' (1601: Error getting stats: android.content.pm.PackageManager.NameNotFoundException)
+03-05 11:14:05.426  4223  4223 W Finsky  : [2] STU: Failed to get storage stats for package 'com.google.android.resolv' (1601: Error getting stats: android.content.pm.PackageManager.NameNotFoundException)
+03-05 11:14:05.431  4223  4223 W Finsky  : [2] STU: Failed to get storage stats for package 'com.android.i18n' (1601: Error getting stats: android.content.pm.PackageManager.NameNotFoundException)
+03-05 11:14:05.434  4223  4223 W Finsky  : [2] STU: Failed to get storage stats for package 'com.android.hardware.dumpstate' (1601: Error getting stats: android.content.pm.PackageManager.NameNotFoundException)
+03-05 11:14:05.434  4223  4223 W Finsky  : [2] STU: Failed to get storage stats for package 'com.google.android.configinfrastructure' (1601: Error getting stats: android.content.pm.PackageManager.NameNotFoundException)
+03-05 11:14:05.435  4223  4223 W Finsky  : [2] STU: Failed to get storage stats for package 'com.google.android.media' (1601: Error getting stats: android.content.pm.PackageManager.NameNotFoundException)
+03-05 11:14:05.435  4223  4223 W Finsky  : [2] STU: Failed to get storage stats for package 'com.google.android.conscrypt' (1601: Error getting stats: android.content.pm.PackageManager.NameNotFoundException)
+03-05 11:14:05.438  4223  4223 W Finsky  : [2] STU: Failed to get storage stats for package 'com.android.hardware.cas' (1601: Error getting stats: android.content.pm.PackageManager.NameNotFoundException)
+03-05 11:14:05.439  5532  5532 D AudioSystem: onNewService: media.audio_policy service obtained 0xb40075ba0905ca60
+03-05 11:14:05.441  5532  5532 D AudioSystem: getService: checking for service media.audio_policy: 0xb40075ba0905ca60
+03-05 11:14:05.441   488  2086 D NativePermissionController: checkPermission: missing 13 for 10218
+03-05 11:14:05.442   488  2086 D NativePermissionController: checkPermission: missing 13 for 10218
+03-05 11:14:05.442  4223  4223 W Finsky  : [2] STU: Failed to get storage stats for package 'com.google.android.neuralnetworks' (1601: Error getting stats: android.content.pm.PackageManager.NameNotFoundException)
+03-05 11:14:05.444  4223  4223 W Finsky  : [2] STU: Failed to get storage stats for package 'com.google.android.runtime' (1601: Error getting stats: android.content.pm.PackageManager.NameNotFoundException)
+03-05 11:14:05.445  4223  4223 W Finsky  : [2] STU: Failed to get storage stats for package 'com.google.android.ipsec' (1601: Error getting stats: android.content.pm.PackageManager.NameNotFoundException)
+03-05 11:14:05.447  4223  4223 W Finsky  : [2] STU: Failed to get storage stats for package 'com.android.devicelock' (1601: Error getting stats: android.content.pm.PackageManager.NameNotFoundException)
+03-05 11:14:05.447   488  2086 D NativePermissionController: checkPermission: missing 13 for 10218
+03-05 11:14:05.447   488  2086 D NativePermissionController: checkPermission: missing 13 for 10218
+03-05 11:14:05.448  5532  5532 D ffmpeg-kit-flutter: FFmpegKitFlutterPlugin created Z0.e@e61aa34.
+03-05 11:14:05.448  5532  5532 I ffmpeg-kit: Loading ffmpeg-kit.
+03-05 11:14:05.449  5532  5532 D nativeloader: Load /data/app/~~k_SvZTB-y6PMaYIi8rEY6w==/com.example.magic_song-qEjA0KT3m88kaFtPrpYqJw==/base.apk!/lib/arm64-v8a/libffmpegkit_abidetect.so using class loader ns clns-9 (caller=/data/app/~~k_SvZTB-y6PMaYIi8rEY6w==/com.example.magic_song-qEjA0KT3m88kaFtPrpYqJw==/base.apk): ok
+03-05 11:14:05.449  5532  5532 E mple.magic_song: ----- class 'Lcom/antonkarpenko/ffmpegkit/AbiDetect;' cl=0x20e1730 -----
+03-05 11:14:05.449  5532  5532 E mple.magic_song:   objectSize=113 (216 from super)
+03-05 11:14:05.449  5532  5532 E mple.magic_song:   access=0x0000.0401
+03-05 11:14:05.449  5532  5532 E mple.magic_song:   super='java.lang.Class<java.lang.Object>' (cl=0x0)
+03-05 11:14:05.449  5532  5532 E mple.magic_song:   vtable (0 entries, 11 in super):
+03-05 11:14:05.449  5532  5532 E mple.magic_song:   direct methods (4 entries):
+03-05 11:14:05.449  5532  5532 E mple.magic_song:      0: void com.antonkarpenko.ffmpegkit.AbiDetect.<clinit>()
+03-05 11:14:05.449  5532  5532 E mple.magic_song:      1: java.lang.String com.antonkarpenko.ffmpegkit.AbiDetect.getNativeAbi()
+03-05 11:14:05.449  5532  5532 E mple.magic_song:      2: java.lang.String com.antonkarpenko.ffmpegkit.AbiDetect.getNativeBuildConf()
+03-05 11:14:05.449  5532  5532 E mple.magic_song:      3: boolean com.antonkarpenko.ffmpegkit.AbiDetect.isNativeLTSBuild()
+03-05 11:14:05.449  5532  5532 E mple.magic_song:   fields (1 entries):
+03-05 11:14:05.449  5532  5532 E mple.magic_song:      0: static boolean com.antonkarpenko.ffmpegkit.AbiDetect.a
+03-05 11:14:05.449  5532  5532 E mple.magic_song: Failed to register native method com.antonkarpenko.ffmpegkit.AbiDetect.getNativeCpuAbi()Ljava/lang/String; in /data/app/~~k_SvZTB-y6PMaYIi8rEY6w==/com.example.magic_song-qEjA0KT3m88kaFtPrpYqJw==/base.apk
+03-05 11:14:05.449  5532  5532 E ffmpeg-kit: OnLoad failed to RegisterNatives for class com/antonkarpenko/ffmpegkit/AbiDetect.
+03-05 11:14:05.449  5532  5532 E GeneratedPluginsRegister: Tried to automatically register plugins with FlutterEngine (io.flutter.embedding.engine.FlutterEngine@7362dd2) but could not find or invoke the GeneratedPluginRegistrant.
+03-05 11:14:05.450  5532  5532 E GeneratedPluginsRegister: Received exception while registering
+03-05 11:14:05.450  5532  5532 E GeneratedPluginsRegister: java.lang.reflect.InvocationTargetException
+03-05 11:14:05.450  5532  5532 E GeneratedPluginsRegister: 	at java.lang.reflect.Method.invoke(Native Method)
+03-05 11:14:05.450  5532  5532 E GeneratedPluginsRegister: 	at io.flutter.embedding.engine.plugins.util.GeneratedPluginRegister.registerGeneratedPlugins(SourceFile:20)
+03-05 11:14:05.450  5532  5532 E GeneratedPluginsRegister: 	at io.flutter.embedding.android.FlutterActivity.configureFlutterEngine(SourceFile:10)
+03-05 11:14:05.450  5532  5532 E GeneratedPluginsRegister: 	at io.flutter.embedding.android.FlutterActivityAndFragmentDelegate.onAttach(SourceFile:71)
+03-05 11:14:05.450  5532  5532 E GeneratedPluginsRegister: 	at io.flutter.embedding.android.FlutterActivity.onCreate(SourceFile:25)
+03-05 11:14:05.450  5532  5532 E GeneratedPluginsRegister: 	at android.app.Activity.performCreate(Activity.java:9155)
+03-05 11:14:05.450  5532  5532 E GeneratedPluginsRegister: 	at android.app.Activity.performCreate(Activity.java:9133)
+03-05 11:14:05.450  5532  5532 E GeneratedPluginsRegister: 	at android.app.Instrumentation.callActivityOnCreate(Instrumentation.java:1521)
+03-05 11:14:05.450  5532  5532 E GeneratedPluginsRegister: 	at android.app.ActivityThread.performLaunchActivity(ActivityThread.java:4262)
+03-05 11:14:05.450  5532  5532 E GeneratedPluginsRegister: 	at android.app.ActivityThread.handleLaunchActivity(ActivityThread.java:4467)
+03-05 11:14:05.450  5532  5532 E GeneratedPluginsRegister: 	at android.app.servertransaction.LaunchActivityItem.execute(LaunchActivityItem.java:222)
+03-05 11:14:05.450  5532  5532 E GeneratedPluginsRegister: 	at android.app.servertransaction.TransactionExecutor.executeNonLifecycleItem(TransactionExecutor.java:133)
+03-05 11:14:05.450  5532  5532 E GeneratedPluginsRegister: 	at android.app.servertransaction.TransactionExecutor.executeTransactionItems(TransactionExecutor.java:103)
+03-05 11:14:05.450  5532  5532 E GeneratedPluginsRegister: 	at android.app.servertransaction.TransactionExecutor.execute(TransactionExecutor.java:80)
+03-05 11:14:05.450  5532  5532 E GeneratedPluginsRegister: 	at android.app.ActivityThread$H.handleMessage(ActivityThread.java:2823)
+03-05 11:14:05.450  5532  5532 E GeneratedPluginsRegister: 	at android.os.Handler.dispatchMessage(Handler.java:110)
+03-05 11:14:05.450  5532  5532 E GeneratedPluginsRegister: 	at android.os.Looper.loopOnce(Looper.java:248)
+03-05 11:14:05.450  5532  5532 E GeneratedPluginsRegister: 	at android.os.Looper.loop(Looper.java:338)
+03-05 11:14:05.450  5532  5532 E GeneratedPluginsRegister: 	at android.app.ActivityThread.main(ActivityThread.java:9067)
+03-05 11:14:05.450  5532  5532 E GeneratedPluginsRegister: 	at java.lang.reflect.Method.invoke(Native Method)
+03-05 11:14:05.450  5532  5532 E GeneratedPluginsRegister: 	at com.android.internal.os.RuntimeInit$MethodAndArgsCaller.run(RuntimeInit.java:593)
+03-05 11:14:05.450  5532  5532 E GeneratedPluginsRegister: 	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:932)
+03-05 11:14:05.450  5532  5532 E GeneratedPluginsRegister: Caused by: java.lang.Error: FFmpegKit failed to start on brand: google, model: sdk_gphone16k_arm64, device: emu64a16k, api level: 36, abis: arm64-v8a, 32bit abis: , 64bit abis: arm64-v8a.
+03-05 11:14:05.450  5532  5532 E GeneratedPluginsRegister: 	at a.a.D(SourceFile:110)
+03-05 11:14:05.450  5532  5532 E GeneratedPluginsRegister: 	at com.antonkarpenko.ffmpegkit.AbiDetect.<clinit>(SourceFile:3)
+03-05 11:14:05.450  5532  5532 E GeneratedPluginsRegister: 	at com.antonkarpenko.ffmpegkit.FFmpegKitConfig.<clinit>(SourceFile:16)
+03-05 11:14:05.450  5532  5532 E GeneratedPluginsRegister: 	at Z0.e.onAttachedToActivity(SourceFile:22)
+03-05 11:14:05.450  5532  5532 E GeneratedPluginsRegister: 	at io.flutter.embedding.engine.FlutterEngineConnectionRegistry.add(SourceFile:14)
+03-05 11:14:05.450  5532  5532 E GeneratedPluginsRegister: 	at io.flutter.plugins.GeneratedPluginRegistrant.registerWith(SourceFile:31)
+03-05 11:14:05.450  5532  5532 E GeneratedPluginsRegister: 	... 22 more
+03-05 11:14:05.450  5532  5532 E GeneratedPluginsRegister: Caused by: java.lang.UnsatisfiedLinkError: Bad JNI version returned from JNI_OnLoad in "/data/app/~~k_SvZTB-y6PMaYIi8rEY6w==/com.example.magic_song-qEjA0KT3m88kaFtPrpYqJw==/base.apk!/lib/arm64-v8a/libffmpegkit_abidetect.so": 0
+03-05 11:14:05.450  5532  5532 E GeneratedPluginsRegister: 	at java.lang.Runtime.loadLibrary0(Runtime.java:1090)
+03-05 11:14:05.450  5532  5532 E GeneratedPluginsRegister: 	at java.lang.Runtime.loadLibrary0(Runtime.java:1012)
+03-05 11:14:05.450  5532  5532 E GeneratedPluginsRegister: 	at java.lang.System.loadLibrary(System.java:1765)
+03-05 11:14:05.450  5532  5532 E GeneratedPluginsRegister: 	at a.a.D(SourceFile:7)
+03-05 11:14:05.450  5532  5532 E GeneratedPluginsRegister: 	... 27 more
+03-05 11:14:05.453  4223  4223 W Finsky  : [2] STU: Failed to get storage stats for package 'com.android.hardware.power' (1601: Error getting stats: android.content.pm.PackageManager.NameNotFoundException)
+03-05 11:14:05.454  4223  4223 W Finsky  : [2] STU: Failed to get storage stats for package 'com.google.android.ondevicepersonalization' (1601: Error getting stats: android.content.pm.PackageManager.NameNotFoundException)
+03-05 11:14:05.456  4223  4223 W Finsky  : [2] STU: Failed to get storage stats for package 'com.google.android.sdkext' (1601: Error getting stats: android.content.pm.PackageManager.NameNotFoundException)
+03-05 11:14:05.457  4223  4223 W Finsky  : [2] STU: Failed to get storage stats for package 'com.google.android.healthfitness' (1601: Error getting stats: android.content.pm.PackageManager.NameNotFoundException)
+03-05 11:14:05.461  5532  5532 D CompatChangeReporter: Compat change id reported: 377864165; UID 10218; state: ENABLED
+03-05 11:14:05.464  4223  4223 W Finsky  : [2] STU: Failed to get storage stats for package 'com.google.android.adservices' (1601: Error getting stats: android.content.pm.PackageManager.NameNotFoundException)
+03-05 11:14:05.464  4223  4223 W Finsky  : [2] STU: Failed to get storage stats for package 'com.google.android.tethering' (1601: Error getting stats: android.content.pm.PackageManager.NameNotFoundException)
+03-05 11:14:05.467  5532  5532 W HWUI    : Unknown dataspace 0
+03-05 11:14:05.469  4223  4223 W Finsky  : [2] STU: Failed to get storage stats for package 'com.google.android.extservices' (1601: Error getting stats: android.content.pm.PackageManager.NameNotFoundException)
+03-05 11:14:05.473  4223  4223 W Finsky  : [2] STU: Failed to get storage stats for package 'com.google.android.nfcservices' (1601: Error getting stats: android.content.pm.PackageManager.NameNotFoundException)
+03-05 11:14:05.485  4223  4223 W Finsky  : [2] STU: Failed to get storage stats for package 'com.google.android.os.statsd' (1601: Error getting stats: android.content.pm.PackageManager.NameNotFoundException)
+03-05 11:14:05.485  4223  4223 W Finsky  : [2] STU: Failed to get storage stats for package 'com.android.hardware.rebootescrow' (1601: Error getting stats: android.content.pm.PackageManager.NameNotFoundException)
+03-05 11:14:05.488  4223  4223 W Finsky  : [2] STU: Failed to get storage stats for package 'com.google.android.cellbroadcast' (1601: Error getting stats: android.content.pm.PackageManager.NameNotFoundException)
+03-05 11:14:05.492  4223  4223 W Finsky  : [2] STU: Failed to get storage stats for package 'com.google.android.rkpd' (1601: Error getting stats: android.content.pm.PackageManager.NameNotFoundException)
+03-05 11:14:05.505  4223  4223 W Finsky  : [2] STU: Failed to get storage stats for package 'com.google.android.scheduling' (1601: Error getting stats: android.content.pm.PackageManager.NameNotFoundException)
+03-05 11:14:05.508  4223  4223 W Finsky  : [2] STU: Failed to get storage stats for package 'com.android.hardware.gatekeeper' (1601: Error getting stats: android.content.pm.PackageManager.NameNotFoundException)
+03-05 11:14:05.511  4223  4223 I Finsky  : [2] App states replicator found 6 unowned apps
+03-05 11:14:05.516  4223  4259 I Finsky  : [63] Completed 0 account content syncs with 0 successful.
+03-05 11:14:05.517  4223  4223 I Finsky  : [2] [ContentSync] Installation state replication succeeded.
+03-05 11:14:05.517  4223  4223 I Finsky  : [2] SCH: jobFinished: 12-1. TimeElapsed: 375ms.
+03-05 11:14:05.517  4223  4223 I Finsky  : [2] WM::SCH: Logging work end for 12-1
+03-05 11:14:05.526  4223  4259 I Finsky  : [63] SCH: Scheduling phonesky job Id: 1-1337, CT: 1772687991556, Constraints: [{ L: 39316992, D: 82516992, C: CHARGING_NONE, I: IDLE_NONE, N: NET_ANY, B: BATTERY_ANY }]
+03-05 11:14:05.526  4223  4259 I Finsky  : [63] SCH: Scheduling phonesky job Id: 34-82, CT: 1772687998186, Constraints: [{ L: 79199127, D: 1375199127, C: CHARGING_NONE, I: IDLE_NONE, N: NET_ANY, B: BATTERY_ANY }]
+03-05 11:14:05.526  4223  4259 I Finsky  : [63] SCH: Scheduling phonesky job Id: 34-83, CT: 1772687999179, Constraints: [{ L: 604800000, D: 2591999300, C: CHARGING_NONE, I: IDLE_NONE, N: NET_ANY, B: BATTERY_ANY }]
+03-05 11:14:05.527   655  2129 D CoreBackPreview: Window{1f93a10 u0 com.example.magic_song/com.example.magic_song.MainActivity}: Setting back callback OnBackInvokedCallbackInfo{mCallback=android.window.IOnBackInvokedCallback$Stub$Proxy@e22870e, mPriority=-1, mIsAnimationCallback=false, mOverrideBehavior=0}
+03-05 11:14:05.528  4223  4253 I Finsky  : [57] SCH: Scheduling 1 system job(s)
+03-05 11:14:05.529  4223  4253 I Finsky  : [57] SCH: Scheduling system job Id: 9788, L: 37863020, D: 81063020, C: false, I: false, N: 1
+03-05 11:14:05.531  5532  5532 I WindowExtensionsImpl: Initializing Window Extensions, vendor API level=9, activity embedding enabled=true
+03-05 11:14:05.535  4223  5549 I Finsky  : [156] SCH: job service finished with id 9783.
+03-05 11:14:05.538  4223  4223 I Finsky  : [2] Memory trim requested to level 40
+03-05 11:14:05.538  4223  4223 I Finsky  : [2] Flushing in-memory image cache
+03-05 11:14:05.885  5532  5532 D WindowLayoutComponentImpl: Register WindowLayoutInfoListener on Context=com.example.magic_song.MainActivity@efc9acf, of which baseContext=android.app.ContextImpl@8d214eb
+03-05 11:14:05.951   655   701 I ActivityTaskManager: Displayed com.example.magic_song/.MainActivity for user 0: +1s47ms
+03-05 11:14:05.951   655   701 I ActivityTaskManager: Fully drawn com.example.magic_song/.MainActivity: +1s47ms
+03-05 11:14:05.957  1046  1046 D BaseDepthController: setSurface:
+03-05 11:14:05.957  1046  1046 D BaseDepthController: 	mWaitingOnSurfaceValidity: false
+03-05 11:14:05.957  1046  1046 D BaseDepthController: 	mBaseSurface: null
+03-05 11:14:05.957  1046  1046 D BaseDepthController: mSurface is null and mCurrentBlur is: 0
+03-05 11:14:05.958  1046  1046 D StateManager: goToState - fromState: Normal, toState: Normal, partial trace:
+03-05 11:14:05.958  1046  1046 D StateManager: 	at com.android.launcher3.statemanager.StateManager.moveToRestState(go/retraceme 72a59688580715d19f0e415c69e80376c2f062d1648c80db6730905005a27c20:4)
+03-05 11:14:05.958  1046  1046 D StateManager: 	at com.android.launcher3.statemanager.StateManager.moveToRestState(go/retraceme 72a59688580715d19f0e415c69e80376c2f062d1648c80db6730905005a27c20:1)
+03-05 11:14:05.958  1046  1046 D StateManager: 	at com.android.launcher3.statemanager.StatefulActivity.onStop(go/retraceme 72a59688580715d19f0e415c69e80376c2f062d1648c80db6730905005a27c20:34)
+03-05 11:14:05.960  1046  1046 D StatsLog: LAUNCHER_ONSTOP
+03-05 11:14:05.961  1046  1046 D StatsLog: LAUNCHER_GOOGLE_SEARCH_RESTORE_LIST_SIZE_AFTER_ACTIVITY_RESTART
+03-05 11:14:05.969   655   794 I ImeTracker: com.example.magic_song:ab4657e6: onRequestHide at ORIGIN_SERVER reason HIDE_UNSPECIFIED_WINDOW fromUser false
+03-05 11:14:05.972   655   878 D BackgroundInstallControlService: Package event received: 0
+03-05 11:14:05.976  5532  5532 D InsetsController: hide(ime(), fromIme=false)
+03-05 11:14:05.977  5532  5532 I ImeTracker: com.example.magic_song:ab4657e6: onCancelled at PHASE_CLIENT_ALREADY_HIDDEN
+03-05 11:14:05.989   655  2129 I ImeTracker: system_server:66e234de: onRequestHide at ORIGIN_SERVER reason IME_REQUESTED_CHANGED_LISTENER fromUser false
+03-05 11:14:05.989  1762  1762 I GoogleInputMethodService: GoogleInputMethodService.onFinishInput():2113 
+03-05 11:14:05.990   655   704 I ImeTracker: system_server:66e234de: onCancelled at PHASE_SERVER_SHOULD_HIDE
+03-05 11:14:05.991  1762  1762 I Module  : DeviceLockedStatusModuleProvider$Module.updateDeviceLockedStatus():103 repeatCheckTimes = 0, locked = false
+03-05 11:14:05.992  1762  1762 I GoogleInputMethodService: GoogleInputMethodService.onStartInput():1384 onStartInput(EditorInfo{EditorInfo{packageName=com.example.magic_song, inputType=0, inputTypeString=NULL, enableLearning=false, autoCorrection=false, autoComplete=false, imeOptions=0, privateImeOptions=null, actionName=UNSPECIFIED, actionLabel=null, initialSelStart=-1, initialSelEnd=-1, initialCapsMode=0, label=null, fieldId=0, fieldName=null, extras=null, hintText=null, hintLocales=[]}}, false)
+03-05 11:14:05.993  1762  1762 I Module  : DeviceLockedStatusModuleProvider$Module.updateDeviceLockedStatus():103 repeatCheckTimes = 1, locked = false
+03-05 11:14:05.994   655  2129 W PackageConfigPersister: App-specific configuration not found for packageName: com.example.magic_song and userId: 0
+03-05 11:14:06.014  1046  1068 W System  : A resource failed to call release. 
+03-05 11:14:06.016  1046  1068 W System  : A resource failed to call release. 
+03-05 11:14:06.016  1046  1068 W System  : A resource failed to call release. 
+03-05 11:14:06.016  1046  1068 W System  : A resource failed to call release. 
+03-05 11:14:06.056   655   670 I system_server: Background concurrent mark compact GC freed 23MB AllocSpace bytes, 17(896KB) LOS objects, 40% free, 34MB/58MB, paused 349us,765us total 112.244ms
+03-05 11:14:06.058   655   671 I BpBinder: onLastStrongRef automatically unlinking death recipients: 
+03-05 11:14:06.067   655   672 W System  : A resource failed to call release. 
+03-05 11:14:06.068  5532  5532 E flutter : [ERROR:flutter/runtime/dart_vm_initializer.cc(40)] Unhandled Exception: PlatformException(channel-error, Unable to establish connection on channel: "dev.flutter.pigeon.path_provider_android.PathProviderApi.getApplicationSupportPath"., null, null)
+03-05 11:14:06.068  5532  5532 E flutter : #0      PathProviderApi.getApplicationSupportPath (package:path_provider_android/messages.g.dart:117)
+03-05 11:14:06.068  5532  5532 E flutter : <asynchronous suspension>
+03-05 11:14:06.068  5532  5532 E flutter : #1      getApplicationSupportDirectory (package:path_provider/path_provider.dart:78)
+03-05 11:14:06.068  5532  5532 E flutter : <asynchronous suspension>
+03-05 11:14:06.068  5532  5532 E flutter : #2      _localPath (package:google_fonts/src/file_io_desktop_and_mobile.dart:52)
+03-05 11:14:06.068  5532  5532 E flutter : <asynchronous suspension>
+03-05 11:14:06.068  5532  5532 E flutter : #3      _localFile (package:google_fonts/src/file_io_desktop_and_mobile.dart:57)
+03-05 11:14:06.068  5532  5532 E flutter : <asynchronous suspension>
+03-05 11:14:06.068  5532  5532 E flutter : #4      saveFontToDeviceFileSystem (package:google_fonts/src/file_io_desktop_and_mobile.dart:26)
+03-05 11:14:06.068  5532  5532 E flutter : <asynchronous suspension>
+03-05 11:14:06.068  5532  5532 E flutter : 
+03-05 11:14:06.318   518  1711 W IPCThreadState: Sending oneway calls to frozen process.
+03-05 11:14:07.537  5532  5532 E flutter : [ERROR:flutter/runtime/dart_vm_initializer.cc(40)] Unhandled Exception: MissingPluginException(No implementation found for method create on channel com.llfbandit.record/messages)
+03-05 11:14:07.537  5532  5532 E flutter : #0      MethodChannel._invokeMethod (package:flutter/src/services/platform_channel.dart:364)
+03-05 11:14:07.537  5532  5532 E flutter : <asynchronous suspension>
+03-05 11:14:07.537  5532  5532 E flutter : #1      new AudioRecorder.<anonymous closure> (package:record/src/record.dart:29)
+03-05 11:14:07.537  5532  5532 E flutter : <asynchronous suspension>
+03-05 11:14:07.537  5532  5532 E flutter : 
+03-05 11:14:07.538  5532  5532 E flutter : [ERROR:flutter/runtime/dart_vm_initializer.cc(40)] Unhandled Exception: PlatformException(channel-error, Unable to establish connection on channel: "dev.flutter.pigeon.path_provider_android.PathProviderApi.getApplicationDocumentsPath"., null, null)
+03-05 11:14:07.538  5532  5532 E flutter : #0      PathProviderApi.getApplicationDocumentsPath (package:path_provider_android/messages.g.dart:142)
+03-05 11:14:07.538  5532  5532 E flutter : <asynchronous suspension>
+03-05 11:14:07.538  5532  5532 E flutter : #1      getApplicationDocumentsDirectory (package:path_provider/path_provider.dart:121)
+03-05 11:14:07.538  5532  5532 E flutter : <asynchronous suspension>
+03-05 11:14:07.538  5532  5532 E flutter : #2      MelodyViewModel._loadSavedVoices (package:magic_song/viewmodels/melody_viewmodel.dart:1462)
+03-05 11:14:07.538  5532  5532 E flutter : <asynchronous suspension>
+03-05 11:14:07.538  5532  5532 E flutter : 
+03-05 11:14:07.538  5532  5532 E flutter : [ERROR:flutter/runtime/dart_vm_initializer.cc(40)] Unhandled Exception: PlatformException(channel-error, Unable to establish connection on channel: "dev.flutter.pigeon.path_provider_android.PathProviderApi.getApplicationDocumentsPath"., null, null)
+03-05 11:14:07.538  5532  5532 E flutter : #0      PathProviderApi.getApplicationDocumentsPath (package:path_provider_android/messages.g.dart:142)
+03-05 11:14:07.538  5532  5532 E flutter : <asynchronous suspension>
+03-05 11:14:07.538  5532  5532 E flutter : #1      getApplicationDocumentsDirectory (package:path_provider/path_provider.dart:121)
+03-05 11:14:07.538  5532  5532 E flutter : <asynchronous suspension>
+03-05 11:14:07.538  5532  5532 E flutter : #2      MelodyViewModel._loadStudioSettings (package:magic_song/viewmodels/melody_viewmodel.dart:1327)
+03-05 11:14:07.538  5532  5532 E flutter : <asynchronous suspension>
+03-05 11:14:07.538  5532  5532 E flutter : 
+03-05 11:14:07.539  5532  5532 E flutter : [ERROR:flutter/runtime/dart_vm_initializer.cc(40)] Unhandled Exception: PlatformException(channel-error, Unable to establish connection on channel: "dev.flutter.pigeon.path_provider_android.PathProviderApi.getApplicationDocumentsPath"., null, null)
+03-05 11:14:07.539  5532  5532 E flutter : #0      PathProviderApi.getApplicationDocumentsPath (package:path_provider_android/messages.g.dart:142)
+03-05 11:14:07.539  5532  5532 E flutter : <asynchronous suspension>
+03-05 11:14:07.539  5532  5532 E flutter : #1      getApplicationDocumentsDirectory (package:path_provider/path_provider.dart:121)
+03-05 11:14:07.539  5532  5532 E flutter : <asynchronous suspension>
+03-05 11:14:07.539  5532  5532 E flutter : #2      MelodyViewModel._loadProjects (package:magic_song/viewmodels/melody_viewmodel.dart:1491)
+03-05 11:14:07.539  5532  5532 E flutter : <asynchronous suspension>
+03-05 11:14:07.539  5532  5532 E flutter : 
+03-05 11:14:07.539   655  2067 D CoreBackPreview: Window{1f93a10 u0 com.example.magic_song/com.example.magic_song.MainActivity}: Setting back callback OnBackInvokedCallbackInfo{mCallback=android.window.IOnBackInvokedCallback$Stub$Proxy@3eeb1ed, mPriority=0, mIsAnimationCallback=true, mOverrideBehavior=0}
+03-05 11:14:07.999  5532  5532 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=false callback=io.flutter.embedding.android.FlutterActivity$1@685521d
+03-05 11:14:08.000   655  2067 D CoreBackPreview: Window{1f93a10 u0 com.example.magic_song/com.example.magic_song.MainActivity}: Setting back callback OnBackInvokedCallbackInfo{mCallback=android.window.IOnBackInvokedCallback$Stub$Proxy@9c5a2b3, mPriority=-1, mIsAnimationCallback=false, mOverrideBehavior=0}
+03-05 11:14:10.848  5532  5579 D ProfileInstaller: Installing profile for com.example.magic_song
+03-05 11:14:11.286  5580  5580 W dumpsys : Thread Pool max thread count is 0. Cannot cache binder as linkToDeath cannot be implemented. serviceName: package
+03-05 11:14:11.312  1705  4399 I artd    : GetBestInfo: odex next to the dex file (/data/app/~~yLBDj5Izt6WxJiwbi4uefg==/com.google.android.gms-_yUAOnHGeNcsS8GmpEiAiw==/oat/arm64/base.odex) is kOatUpToDate with filter 'speed-profile' executable 'false'
+03-05 11:14:11.314  1705  4399 I artd    : GetBestInfo: odex next to the dex file (/data/app/~~yLBDj5Izt6WxJiwbi4uefg==/com.google.android.gms-_yUAOnHGeNcsS8GmpEiAiw==/oat/arm64/split_AdsDynamite_installtime.odex) is kOatUpToDate with filter 'speed' executable 'false'
+03-05 11:14:11.315  1705  4399 I artd    : GetBestInfo: odex next to the dex file (/data/app/~~yLBDj5Izt6WxJiwbi4uefg==/com.google.android.gms-_yUAOnHGeNcsS8GmpEiAiw==/oat/arm64/split_CronetDynamite_installtime.odex) is kOatUpToDate with filter 'speed-profile' executable 'false'
+03-05 11:14:11.316  1705  4399 I artd    : GetBestInfo: odex next to the dex file (/data/app/~~yLBDj5Izt6WxJiwbi4uefg==/com.google.android.gms-_yUAOnHGeNcsS8GmpEiAiw==/oat/arm64/split_DynamiteLoader_installtime.odex) is kOatUpToDate with filter 'speed' executable 'false'
+03-05 11:14:11.317  1705  4399 I artd    : GetBestInfo: odex next to the dex file (/data/app/~~yLBDj5Izt6WxJiwbi4uefg==/com.google.android.gms-_yUAOnHGeNcsS8GmpEiAiw==/oat/arm64/split_DynamiteModulesA_installtime.odex) is kOatUpToDate with filter 'speed' executable 'false'
+03-05 11:14:11.318  1705  4399 I artd    : GetBestInfo: odex next to the dex file (/data/app/~~yLBDj5Izt6WxJiwbi4uefg==/com.google.android.gms-_yUAOnHGeNcsS8GmpEiAiw==/oat/arm64/split_DynamiteModulesC_installtime.odex) is kOatUpToDate with filter 'speed' executable 'false'
+03-05 11:14:11.319  1705  4399 I artd    : GetBestInfo: odex next to the dex file (/data/app/~~yLBDj5Izt6WxJiwbi4uefg==/com.google.android.gms-_yUAOnHGeNcsS8GmpEiAiw==/oat/arm64/split_GoogleCertificates_installtime.odex) is kOatUpToDate with filter 'speed' executable 'false'
+03-05 11:14:11.320  1705  4399 I artd    : GetBestInfo: odex next to the dex file (/data/app/~~yLBDj5Izt6WxJiwbi4uefg==/com.google.android.gms-_yUAOnHGeNcsS8GmpEiAiw==/oat/arm64/split_MapsDynamite_installtime.odex) is kOatUpToDate with filter 'speed' executable 'false'
+03-05 11:14:11.321  1705  4399 I artd    : GetBestInfo: odex next to the dex file (/data/app/~~yLBDj5Izt6WxJiwbi4uefg==/com.google.android.gms-_yUAOnHGeNcsS8GmpEiAiw==/oat/arm64/split_MeasurementDynamite_installtime.odex) is kOatUpToDate with filter 'speed' executable 'false'
+03-05 11:14:11.322  1705  4399 I artd    : GetBestInfo: odex next to the dex file (/data/app/~~yLBDj5Izt6WxJiwbi4uefg==/com.google.android.gms-_yUAOnHGeNcsS8GmpEiAiw==/oat/arm64/split_all_locale_splits.odex) is kOatUpToDate with filter 'speed' executable 'false'
+03-05 11:14:11.323  1705  4399 I artd    : GetBestInfo: /data/user_de/0/com.google.android.gms/app_chimera/m/00000009/dl-TfliteDynamiteDynamite.integ_243930801100400.apk has no usable artifacts
+03-05 11:14:11.323  1705  4399 I artd    : GetBestInfo: /data/user_de/0/com.google.android.gms/app_chimera/m/00000001/CronetDynamite.apk has no usable artifacts
+03-05 11:14:11.323  1705  4399 I artd    : GetBestInfo: /data/user_de/0/com.google.android.gms/app_chimera/m/00000002/DynamiteLoader.apk has no usable artifacts
+03-05 11:14:11.323  1705  4399 I artd    : GetBestInfo: /data/user_de/0/com.google.android.gms/app_chimera/m/00000005/GoogleCertificates.apk has no usable artifacts
+03-05 11:14:11.324  1705  4399 I artd    : GetBestInfo: /data/user_de/0/com.google.android.gms/app_chimera/m/0000000f/dl-PlayCloudSearch.optional_252635100000.apk has no usable artifacts
+03-05 11:14:11.325  1705  4399 I artd    : GetBestInfo: /data/user/0/com.google.android.gms/app_dg_cache/2DB167EF440159FF365B49D8B91441B1CFD017F9/the.apk has no usable artifacts
+03-05 11:14:11.325  1705  4399 I artd    : GetBestInfo: /data/user_de/0/com.google.android.gms/app_chimera/m/00000017/dl-MapsCoreDynamite.integ_254515602100400.apk has no usable artifacts
+03-05 11:14:11.326  1705  1705 I artd    : GetBestInfo: /data/user_de/0/com.google.android.gms/app_chimera/m/00000010/dl-VisionOcr.optional_260235100000.apk has no usable artifacts
+03-05 11:14:11.327  1705  1705 I artd    : GetBestInfo: vdex next to the dex file (/data/user/0/com.google.android.gms/app_dg_cache/5F3BE511026BE02395273329794ABD31B995290B/oat/arm64/the.vdex) is kOatUpToDate with filter 'verify' executable 'false'
+03-05 11:14:11.328  1705  1705 I artd    : GetBestInfo: /data/user_de/0/com.google.android.gms/app_chimera/m/0000000a/dl-MlkitBarcodeUi.optional_252635100400.apk has no usable artifacts
+03-05 11:14:11.329  1705  1705 I artd    : GetBestInfo: /data/user_de/0/com.google.android.gms/app_chimera/m/00000012/dl-Appsearch.optional_260235100400.apk has no usable artifacts
+03-05 11:14:11.329  1705  1705 I artd    : GetBestInfo: /data/user_de/0/com.google.android.gms/app_chimera/m/00000016/dl-MlkitOcrCommon.optional_260235100400.apk has no usable artifacts
+03-05 11:14:11.330  1705  1705 I artd    : GetBestInfo: vdex next to the dex file (/data/user/0/com.google.android.gms/app_dg_cache/9B790551AEA6F45286C19831BDC04308DF1AFF9F/oat/arm64/the.vdex) is kOatUpToDate with filter 'verify' executable 'false'
+03-05 11:14:11.331  1705  1705 I artd    : GetBestInfo: /data/user_de/0/com.google.android.gms/app_chimera/m/00000018/dl-TfliteDynamiteDynamite.integ_252130102100400.apk has no usable artifacts
+03-05 11:14:11.332  1705  1705 I artd    : GetBestInfo: /data/user_de/0/com.google.android.gms/app_chimera/m/00000014/dl-MlkitBarcodeUi.optional_260235100400.apk has no usable artifacts
+03-05 11:14:11.332  1705  1705 I artd    : GetBestInfo: /data/user_de/0/com.google.android.gms/app_chimera/m/00000011/dl-PlayCloudSearch.optional_260235100000.apk has no usable artifacts
+03-05 11:14:11.333  1705  4399 I artd    : GetBestInfo: /data/user_de/0/com.google.android.gms/app_chimera/m/0000000e/dl-VisionOcr.optional_252635100000.apk has no usable artifacts
+03-05 11:14:11.334  1705  4399 I artd    : GetBestInfo: /data/user_de/0/com.google.android.gms/app_chimera/m/00000008/dl-Appsearch.optional_252635100400.apk has no usable artifacts
+03-05 11:14:11.334  1705  1705 I artd    : GetBestInfo: vdex next to the dex file (/data/user/0/com.google.android.gms/app_dg_cache/7D5C9405A3D81C422016C0CF22E38A12D08182E8/oat/arm64/the.vdex) is kOatUpToDate with filter 'verify' executable 'false'
+03-05 11:14:11.335  1705  4399 I artd    : GetBestInfo: /data/user_de/0/com.google.android.gms/app_chimera/m/0000000c/dl-MlkitOcrCommon.optional_252635100400.apk has no usable artifacts
+03-05 11:14:11.336  1705  4399 I artd    : GetBestInfo: vdex next to the dex file (/data/user/0/com.google.android.gms/app_dg_cache/646DA7BE3AF9B756DEFD88CA7189FC9D7C55EC0F/oat/arm64/the.vdex) is kOatUpToDate with filter 'verify' executable 'false'
+03-05 11:14:11.337  1705  4399 I artd    : GetBestInfo: /data/user_de/0/com.google.android.gms/app_chimera/m/00000013/dl-TfliteDynamiteDynamite.integ_243930802100400.apk has no usable artifacts
+03-05 11:14:11.337  1705  4399 W artd    : Could not get dex checksums for location /data/app/~~yJyFYFCVq72mT1YJAMQJOQ==/com.android.vending-elVUq6gWjgXagox_fAfJbg==/base.apk, fd=-1
+03-05 11:14:13.726   921   921 I ClipboardListener: Clipboard overlay suppressed.
+03-05 11:14:13.729  1759  2064 I AiAiTranslate: C2T - not in a conversation
+03-05 11:14:13.821  1044  1212 D SatelliteController: iisInCarrierRoamingNbIotNtn: satellite is disabled
+03-05 11:14:13.822   655  2067 W IPCThreadState: Sending oneway calls to frozen process.
+03-05 11:14:15.242   655   777 D ActivityManager: freezing 1505 com.google.android.apps.wellbeing
+03-05 11:14:15.245   655   830 D InetDiagMessage: Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET, states=14
+03-05 11:14:15.246   655   830 D InetDiagMessage: Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET6, states=14
+03-05 11:14:15.246   655   830 D InetDiagMessage: Destroyed live tcp sockets for uids={10147} in 1ms
+03-05 11:14:15.539   655   777 D ActivityManager: freezing 4223 com.android.vending
+03-05 11:14:15.542   655   830 D InetDiagMessage: Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET, states=14
+03-05 11:14:15.542   655   830 D InetDiagMessage: Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET6, states=14
+03-05 11:14:15.542   655   830 D InetDiagMessage: Destroyed live tcp sockets for uids={10144} in 1ms
+03-05 11:14:16.529  5532  5532 E flutter : [ERROR:flutter/runtime/dart_vm_initializer.cc(40)] Unhandled Exception: MissingPluginException(No implementation found for method requestPermissions on channel flutter.baseflow.com/permissions/methods)
+03-05 11:14:16.529  5532  5532 E flutter : #0      MethodChannel._invokeMethod (package:flutter/src/services/platform_channel.dart:364)
+03-05 11:14:16.529  5532  5532 E flutter : <asynchronous suspension>
+03-05 11:14:16.529  5532  5532 E flutter : #1      MethodChannelPermissionHandler.requestPermissions (package:permission_handler_platform_interface/src/method_channel/method_channel_permission_handler.dart:80)
+03-05 11:14:16.529  5532  5532 E flutter : <asynchronous suspension>
+03-05 11:14:16.529  5532  5532 E flutter : #2      PermissionActions.request (package:permission_handler/permission_handler.dart:109)
+03-05 11:14:16.529  5532  5532 E flutter : <asynchronous suspension>
+03-05 11:14:16.529  5532  5532 E flutter : #3      MelodyViewModel.startRecording (package:magic_song/viewmodels/melody_viewmodel.dart:648)
+03-05 11:14:16.529  5532  5532 E flutter : <asynchronous suspension>
+03-05 11:14:16.529  5532  5532 E flutter : #4      _MelodyRecorderViewState._startRecording (package:magic_song/views/melody_recorder_view.dart:88)
+03-05 11:14:16.529  5532  5532 E flutter : <asynchronous suspension>
+03-05 11:14:16.529  5532  5532 E flutter : 
+03-05 11:14:16.535   655  2129 W AS.PlaybackActivityMon: No piid assigned for invalid/internal port id 15
+03-05 11:14:16.576   488   593 D AudioFlinger: mixer(0xb400799002aef770) throttle end: throttle time(41)
+03-05 11:14:16.622   488   593 D AudioFlinger: mixer(0xb400799002aef770) throttle end: throttle time(27)
+03-05 11:14:18.399   655   777 D ActivityManager: freezing 1891 com.android.keychain
+03-05 11:14:18.407   655   777 D ActivityManager: freezing 2782 com.android.dynsystem:dynsystem
+03-05 11:14:18.408   655   777 D ActivityManager: freezing 2735 com.android.dynsystem
+03-05 11:14:18.411   655   777 D ActivityManager: freezing 2465 com.android.localtransport
+03-05 11:14:19.614   452  1717 D android.hardware.audio@7.1-impl.ranchu: threadLoop: entering standby, frames: 525504
+03-05 11:14:19.614   452  1717 D android.hardware.audio@7.1-impl.ranchu: ~TinyalsaSink: joining consumeThread
+03-05 11:14:19.621   452  5588 D android.hardware.audio@7.1-impl.ranchu: consumeThread: exiting
+03-05 11:14:19.621   452  1717 D android.hardware.audio@7.1-impl.ranchu: ~TinyalsaSink: stopping PCM stream
+03-05 11:14:21.292  5593  5593 W dumpsys : Thread Pool max thread count is 0. Cannot cache binder as linkToDeath cannot be implemented. serviceName: package
+03-05 11:14:21.317  1705  4399 I artd    : GetBestInfo: odex next to the dex file (/data/app/~~yLBDj5Izt6WxJiwbi4uefg==/com.google.android.gms-_yUAOnHGeNcsS8GmpEiAiw==/oat/arm64/base.odex) is kOatUpToDate with filter 'speed-profile' executable 'false'
+03-05 11:14:21.319  1705  4399 I artd    : GetBestInfo: odex next to the dex file (/data/app/~~yLBDj5Izt6WxJiwbi4uefg==/com.google.android.gms-_yUAOnHGeNcsS8GmpEiAiw==/oat/arm64/split_AdsDynamite_installtime.odex) is kOatUpToDate with filter 'speed' executable 'false'
+03-05 11:14:21.320  1705  4399 I artd    : GetBestInfo: odex next to the dex file (/data/app/~~yLBDj5Izt6WxJiwbi4uefg==/com.google.android.gms-_yUAOnHGeNcsS8GmpEiAiw==/oat/arm64/split_CronetDynamite_installtime.odex) is kOatUpToDate with filter 'speed-profile' executable 'false'
+03-05 11:14:21.321  1705  4399 I artd    : GetBestInfo: odex next to the dex file (/data/app/~~yLBDj5Izt6WxJiwbi4uefg==/com.google.android.gms-_yUAOnHGeNcsS8GmpEiAiw==/oat/arm64/split_DynamiteLoader_installtime.odex) is kOatUpToDate with filter 'speed' executable 'false'
+03-05 11:14:21.321  1705  4399 I artd    : GetBestInfo: odex next to the dex file (/data/app/~~yLBDj5Izt6WxJiwbi4uefg==/com.google.android.gms-_yUAOnHGeNcsS8GmpEiAiw==/oat/arm64/split_DynamiteModulesA_installtime.odex) is kOatUpToDate with filter 'speed' executable 'false'
+03-05 11:14:21.322  1705  4399 I artd    : GetBestInfo: odex next to the dex file (/data/app/~~yLBDj5Izt6WxJiwbi4uefg==/com.google.android.gms-_yUAOnHGeNcsS8GmpEiAiw==/oat/arm64/split_DynamiteModulesC_installtime.odex) is kOatUpToDate with filter 'speed' executable 'false'
+03-05 11:14:21.323  1705  4399 I artd    : GetBestInfo: odex next to the dex file (/data/app/~~yLBDj5Izt6WxJiwbi4uefg==/com.google.android.gms-_yUAOnHGeNcsS8GmpEiAiw==/oat/arm64/split_GoogleCertificates_installtime.odex) is kOatUpToDate with filter 'speed' executable 'false'
+03-05 11:14:21.324  1705  4399 I artd    : GetBestInfo: odex next to the dex file (/data/app/~~yLBDj5Izt6WxJiwbi4uefg==/com.google.android.gms-_yUAOnHGeNcsS8GmpEiAiw==/oat/arm64/split_MapsDynamite_installtime.odex) is kOatUpToDate with filter 'speed' executable 'false'
+03-05 11:14:21.325  1705  4399 I artd    : GetBestInfo: odex next to the dex file (/data/app/~~yLBDj5Izt6WxJiwbi4uefg==/com.google.android.gms-_yUAOnHGeNcsS8GmpEiAiw==/oat/arm64/split_MeasurementDynamite_installtime.odex) is kOatUpToDate with filter 'speed' executable 'false'
+03-05 11:14:21.326  1705  4399 I artd    : GetBestInfo: odex next to the dex file (/data/app/~~yLBDj5Izt6WxJiwbi4uefg==/com.google.android.gms-_yUAOnHGeNcsS8GmpEiAiw==/oat/arm64/split_all_locale_splits.odex) is kOatUpToDate with filter 'speed' executable 'false'
+03-05 11:14:21.327  1705  4399 I artd    : GetBestInfo: /data/user_de/0/com.google.android.gms/app_chimera/m/00000009/dl-TfliteDynamiteDynamite.integ_243930801100400.apk has no usable artifacts
+03-05 11:14:21.327  1705  4399 I artd    : GetBestInfo: /data/user_de/0/com.google.android.gms/app_chimera/m/00000001/CronetDynamite.apk has no usable artifacts
+03-05 11:14:21.328  1705  4399 I artd    : GetBestInfo: /data/user_de/0/com.google.android.gms/app_chimera/m/00000002/DynamiteLoader.apk has no usable artifacts
+03-05 11:14:21.328  1705  4399 I artd    : GetBestInfo: /data/user_de/0/com.google.android.gms/app_chimera/m/00000005/GoogleCertificates.apk has no usable artifacts
+03-05 11:14:21.329  1705  4399 I artd    : GetBestInfo: /data/user_de/0/com.google.android.gms/app_chimera/m/0000000f/dl-PlayCloudSearch.optional_252635100000.apk has no usable artifacts
+03-05 11:14:21.329  1705  4399 I artd    : GetBestInfo: /data/user/0/com.google.android.gms/app_dg_cache/2DB167EF440159FF365B49D8B91441B1CFD017F9/the.apk has no usable artifacts
+03-05 11:14:21.329  1705  4399 I artd    : GetBestInfo: /data/user_de/0/com.google.android.gms/app_chimera/m/00000017/dl-MapsCoreDynamite.integ_254515602100400.apk has no usable artifacts
+03-05 11:14:21.330  1705  4399 I artd    : GetBestInfo: /data/user_de/0/com.google.android.gms/app_chimera/m/00000010/dl-VisionOcr.optional_260235100000.apk has no usable artifacts
+03-05 11:14:21.332  1705  4399 I artd    : GetBestInfo: vdex next to the dex file (/data/user/0/com.google.android.gms/app_dg_cache/5F3BE511026BE02395273329794ABD31B995290B/oat/arm64/the.vdex) is kOatUpToDate with filter 'verify' executable 'false'
+03-05 11:14:21.332  1705  4399 I artd    : GetBestInfo: /data/user_de/0/com.google.android.gms/app_chimera/m/0000000a/dl-MlkitBarcodeUi.optional_252635100400.apk has no usable artifacts
+03-05 11:14:21.333  1705  4399 I artd    : GetBestInfo: /data/user_de/0/com.google.android.gms/app_chimera/m/00000012/dl-Appsearch.optional_260235100400.apk has no usable artifacts
+03-05 11:14:21.334  1705  4399 I artd    : GetBestInfo: /data/user_de/0/com.google.android.gms/app_chimera/m/00000016/dl-MlkitOcrCommon.optional_260235100400.apk has no usable artifacts
+03-05 11:14:21.335  1705  4399 I artd    : GetBestInfo: vdex next to the dex file (/data/user/0/com.google.android.gms/app_dg_cache/9B790551AEA6F45286C19831BDC04308DF1AFF9F/oat/arm64/the.vdex) is kOatUpToDate with filter 'verify' executable 'false'
+03-05 11:14:21.336  1705  4399 I artd    : GetBestInfo: /data/user_de/0/com.google.android.gms/app_chimera/m/00000018/dl-TfliteDynamiteDynamite.integ_252130102100400.apk has no usable artifacts
+03-05 11:14:21.336  1705  4399 I artd    : GetBestInfo: /data/user_de/0/com.google.android.gms/app_chimera/m/00000014/dl-MlkitBarcodeUi.optional_260235100400.apk has no usable artifacts
+03-05 11:14:21.337  1705  4399 I artd    : GetBestInfo: /data/user_de/0/com.google.android.gms/app_chimera/m/00000011/dl-PlayCloudSearch.optional_260235100000.apk has no usable artifacts
+03-05 11:14:21.338  1705  4399 I artd    : GetBestInfo: /data/user_de/0/com.google.android.gms/app_chimera/m/0000000e/dl-VisionOcr.optional_252635100000.apk has no usable artifacts
+03-05 11:14:21.339  1705  4399 I artd    : GetBestInfo: /data/user_de/0/com.google.android.gms/app_chimera/m/00000008/dl-Appsearch.optional_252635100400.apk has no usable artifacts
+03-05 11:14:21.340  1705  4399 I artd    : GetBestInfo: vdex next to the dex file (/data/user/0/com.google.android.gms/app_dg_cache/7D5C9405A3D81C422016C0CF22E38A12D08182E8/oat/arm64/the.vdex) is kOatUpToDate with filter 'verify' executable 'false'
+03-05 11:14:21.340  1705  4399 I artd    : GetBestInfo: /data/user_de/0/com.google.android.gms/app_chimera/m/0000000c/dl-MlkitOcrCommon.optional_252635100400.apk has no usable artifacts
+03-05 11:14:21.341  1705  4399 I artd    : GetBestInfo: vdex next to the dex file (/data/user/0/com.google.android.gms/app_dg_cache/646DA7BE3AF9B756DEFD88CA7189FC9D7C55EC0F/oat/arm64/the.vdex) is kOatUpToDate with filter 'verify' executable 'false'
+03-05 11:14:21.342  1705  4399 I artd    : GetBestInfo: /data/user_de/0/com.google.android.gms/app_chimera/m/00000013/dl-TfliteDynamiteDynamite.integ_243930802100400.apk has no usable artifacts
+03-05 11:14:21.342  1705  4399 W artd    : Could not get dex checksums for location /data/app/~~yJyFYFCVq72mT1YJAMQJOQ==/com.android.vending-elVUq6gWjgXagox_fAfJbg==/base.apk, fd=-1

@@ -82,6 +82,7 @@ const List<PresetData> _availablePresets = [
 
 class _MelodyRecorderViewState extends State<MelodyRecorderView> {
   String _lastStatusText = '';
+  DateTime? _lastBackPressTime;
 
   Future<void> _startRecording() async {
     final provider = context.read<MelodyViewModel>();
@@ -193,280 +194,312 @@ class _MelodyRecorderViewState extends State<MelodyRecorderView> {
           primaryAction = canPlay ? _togglePlayback : null;
         }
 
-        return Scaffold(
-          extendBodyBehindAppBar: true,
-          appBar: AppBar(
-            backgroundColor: Colors.transparent,
-            elevation: 0,
-            title: const Text('Magic Song Studio'),
-            actions: [
-              IconButton(
-                tooltip: 'Saved Voices',
-                onPressed: () =>
-                    Navigator.of(context).pushNamed(AppRoutes.savedVoices),
-                icon: const Icon(Icons.library_music_rounded),
-              ),
-            ],
-          ),
-          body: Stack(
-            children: [
-              const _Backdrop(),
-              SafeArea(
-                child: ListView(
-                  physics: const BouncingScrollPhysics(),
-                  padding: EdgeInsets.fromLTRB(0.w, 10.h, 0.w, 24.h),
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 16.w),
-                      child: _HeaderRow(
-                        manualMode: provider.isManualMode,
-                        disabled: isBusy || isRecording,
-                        onManualChanged: (val) {
-                          provider.setIsManualMode(val);
-                          provider.setStatus(
-                            val
-                                ? 'Manual controls enabled.'
-                                : 'Preset mode enabled.',
-                          );
-                        },
-                      ),
-                    ),
-                    SizedBox(height: 14.h),
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 16.w),
-                      child: _StatusPanel(
-                        statusText: provider.statusText,
-                        hintText: provider.workflowHint,
-                        hasRaw: hasRaw,
-                        hasProcessed: hasProcessed,
-                        isBusy: isBusy,
-                      ),
-                    ),
-                    SizedBox(height: 14.h),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.only(left: 14.w, top: 10.h),
-                          child: Text(
-                            'Preset Bank',
-                            style: Theme.of(context).textTheme.titleMedium
-                                ?.copyWith(fontWeight: FontWeight.w700),
-                          ),
-                        ),
-                        SizedBox(height: 10.h),
-                        if (!provider.isManualMode)
-                          SizedBox(
-                            height: 146.h,
-                            child: ListView.separated(
-                              scrollDirection: Axis.horizontal,
-                              padding: EdgeInsets.symmetric(horizontal: 14.w),
-                              itemCount: _availablePresets.length,
-                              separatorBuilder: (context, index) =>
-                                  SizedBox(width: 12.w),
-                              itemBuilder: (context, index) {
-                                final preset = _availablePresets[index];
-                                return _PresetTile(
-                                  data: preset,
-                                  selected:
-                                      provider.selectedPreset == preset.preset,
-                                  onTap: isBusy || isRecording
-                                      ? null
-                                      : () => provider.setPreset(preset.preset),
-                                );
-                              },
-                            ),
-                          )
-                        else
-                          Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 16.w),
-                            child: Text(
-                              'Manual mode is on. EQ and reverb are editable below.',
-                              style: TextStyle(
-                                color: Colors.white.withValues(alpha: 0.8),
-                              ),
-                            ),
-                          ),
-                      ],
-                    ),
-                    SizedBox(height: 14.h),
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 16.w),
-                      child: _GlassPanel(
-                        child: Column(
-                          children: [
-                            _AudioVisualizerWidget(
-                              amplitudes: provider.amplitudes,
-                            ),
-                            SizedBox(height: 10.h),
-                            Text(
-                              'Playback Source',
-                              style: Theme.of(context).textTheme.labelLarge,
-                            ),
-                            SizedBox(height: 6.h),
-                            Wrap(
-                              spacing: 8.w,
-                              children: [
-                                ChoiceChip(
-                                  label: const Text('Processed'),
-                                  selected:
-                                      provider.playbackSource ==
-                                      PlaybackSource.processed,
-                                  onSelected: isBusy || isRecording
-                                      ? null
-                                      : (_) => provider.setPlaybackSource(
-                                          PlaybackSource.processed,
-                                        ),
-                                ),
-                                ChoiceChip(
-                                  label: const Text('Dry'),
-                                  selected:
-                                      provider.playbackSource ==
-                                      PlaybackSource.dry,
-                                  onSelected: isBusy || isRecording
-                                      ? null
-                                      : (_) => provider.setPlaybackSource(
-                                          PlaybackSource.dry,
-                                        ),
-                                ),
-                              ],
-                            ),
-                            SizedBox(height: 14.h),
-                            SizedBox(
-                              width: double.infinity,
-                              child: FilledButton.icon(
-                                onPressed: primaryAction,
-                                icon: Icon(primaryIcon),
-                                label: Text(primaryLabel),
-                              ),
-                            ),
-                            SizedBox(height: 10.h),
-                            Wrap(
-                              spacing: 8.w,
-                              runSpacing: 8.h,
-                              alignment: WrapAlignment.center,
-                              children: [
-                                OutlinedButton.icon(
-                                  onPressed: hasRaw
-                                      ? () => provider
-                                            .saveVoiceWithSelectedEffect()
-                                      : null,
-                                  icon: const Icon(Icons.save_rounded),
-                                  label: const Text('Save'),
-                                ),
-                                OutlinedButton.icon(
-                                  onPressed: hasRaw
-                                      ? () => provider.shareAudio()
-                                      : null,
-                                  icon: const Icon(Icons.share_rounded),
-                                  label: const Text('Share'),
-                                ),
-                                OutlinedButton.icon(
-                                  onPressed: hasRaw ? _resetSession : null,
-                                  icon: const Icon(Icons.refresh_rounded),
-                                  label: const Text('New'),
-                                ),
-                              ],
-                            ),
-                          ],
+        return PopScope(
+          canPop: false,
+          onPopInvokedWithResult: (bool didPop, dynamic result) {
+            if (didPop) return;
+            final now = DateTime.now();
+            final isWarningSufficient =
+                _lastBackPressTime == null ||
+                now.difference(_lastBackPressTime!) >
+                    const Duration(seconds: 2);
+
+            if (isWarningSufficient) {
+              _lastBackPressTime = now;
+              ScaffoldMessenger.of(context)
+                ..hideCurrentSnackBar()
+                ..showSnackBar(
+                  const SnackBar(
+                    content: Text('Press back again to exit'),
+                    duration: Duration(seconds: 2),
+                    behavior: SnackBarBehavior.floating,
+                  ),
+                );
+            } else {
+              // Exits the application when double tapped within 2 seconds
+              // For a production app this removes the Flutter Engine activity
+              Navigator.of(context).pop();
+            }
+          },
+          child: Scaffold(
+            extendBodyBehindAppBar: true,
+            appBar: AppBar(
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+              title: const Text('Magic Song Studio'),
+              actions: [
+                IconButton(
+                  tooltip: 'Saved Voices',
+                  onPressed: () =>
+                      Navigator.of(context).pushNamed(AppRoutes.savedVoices),
+                  icon: const Icon(Icons.library_music_rounded),
+                ),
+              ],
+            ),
+            body: Stack(
+              children: [
+                const _Backdrop(),
+                SafeArea(
+                  child: ListView(
+                    physics: const BouncingScrollPhysics(),
+                    padding: EdgeInsets.fromLTRB(0.w, 10.h, 0.w, 24.h),
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 16.w),
+                        child: _HeaderRow(
+                          manualMode: provider.isManualMode,
+                          disabled: isBusy || isRecording,
+                          onManualChanged: (val) {
+                            provider.setIsManualMode(val);
+                            provider.setStatus(
+                              val
+                                  ? 'Manual controls enabled.'
+                                  : 'Preset mode enabled.',
+                            );
+                          },
                         ),
                       ),
-                    ),
-                    SizedBox(height: 14.h),
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 16.w),
-                      child: _GlassPanel(
-                        child: Theme(
-                          data: Theme.of(
-                            context,
-                          ).copyWith(dividerColor: Colors.transparent),
-                          child: ExpansionTile(
-                            title: const Text('Advanced EQ & Reverb'),
-                            subtitle: const Text('Manual fine control'),
-                            children: [
-                              _StudioSlider(
-                                label: 'Bass',
-                                value: provider.eqBass,
-                                min: -10,
-                                max: 10,
-                                onChanged: isBusy || isRecording
-                                    ? null
-                                    : (v) => provider.setEqBass(v),
-                              ),
-                              _StudioSlider(
-                                label: 'Mid',
-                                value: provider.eqMid,
-                                min: -10,
-                                max: 10,
-                                onChanged: isBusy || isRecording
-                                    ? null
-                                    : (v) => provider.setEqMid(v),
-                              ),
-                              _StudioSlider(
-                                label: 'Treble',
-                                value: provider.eqTreble,
-                                min: -10,
-                                max: 10,
-                                onChanged: isBusy || isRecording
-                                    ? null
-                                    : (v) => provider.setEqTreble(v),
-                              ),
-                              _StudioSlider(
-                                label: 'Reverb',
-                                value: provider.reverb,
-                                min: 0,
-                                max: 1,
-                                onChanged: isBusy || isRecording
-                                    ? null
-                                    : (v) => provider.setReverb(v),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                    if (provider.processedVersions.isNotEmpty) ...[
                       SizedBox(height: 14.h),
-                      _GlassPanel(
-                        child: Theme(
-                          data: Theme.of(
-                            context,
-                          ).copyWith(dividerColor: Colors.transparent),
-                          child: ExpansionTile(
-                            title: const Text('Processed Snapshots'),
-                            subtitle: const Text('Jump to previous snapshots'),
-                            children: [
-                              Align(
-                                alignment: Alignment.centerLeft,
-                                child: Wrap(
-                                  spacing: 8.w,
-                                  runSpacing: 8.h,
-                                  children: provider.processedVersions
-                                      .map(
-                                        (version) => ChoiceChip(
-                                          label: Text(version.label),
-                                          selected:
-                                              provider.activeProcessedPath ==
-                                              version.path,
-                                          onSelected: (_) => provider
-                                              .setActiveProcessedVersion(
-                                                version.path,
-                                              ),
-                                        ),
-                                      )
-                                      .toList(),
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 16.w),
+                        child: _StatusPanel(
+                          statusText: provider.statusText,
+                          hintText: provider.workflowHint,
+                          hasRaw: hasRaw,
+                          hasProcessed: hasProcessed,
+                          isBusy: isBusy,
+                        ),
+                      ),
+                      SizedBox(height: 14.h),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.only(left: 14.w, top: 10.h),
+                            child: Text(
+                              'Preset Bank',
+                              style: Theme.of(context).textTheme.titleMedium
+                                  ?.copyWith(fontWeight: FontWeight.w700),
+                            ),
+                          ),
+                          SizedBox(height: 10.h),
+                          if (!provider.isManualMode)
+                            SizedBox(
+                              height: 146.h,
+                              child: ListView.separated(
+                                scrollDirection: Axis.horizontal,
+                                padding: EdgeInsets.symmetric(horizontal: 14.w),
+                                itemCount: _availablePresets.length,
+                                separatorBuilder: (context, index) =>
+                                    SizedBox(width: 12.w),
+                                itemBuilder: (context, index) {
+                                  final preset = _availablePresets[index];
+                                  return _PresetTile(
+                                    data: preset,
+                                    selected:
+                                        provider.selectedPreset ==
+                                        preset.preset,
+                                    onTap: isBusy || isRecording
+                                        ? null
+                                        : () =>
+                                              provider.setPreset(preset.preset),
+                                  );
+                                },
+                              ),
+                            )
+                          else
+                            Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 16.w),
+                              child: Text(
+                                'Manual mode is on. EQ and reverb are editable below.',
+                                style: TextStyle(
+                                  color: Colors.white.withValues(alpha: 0.8),
                                 ),
+                              ),
+                            ),
+                        ],
+                      ),
+                      SizedBox(height: 14.h),
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 16.w),
+                        child: _GlassPanel(
+                          child: Column(
+                            children: [
+                              _AudioVisualizerWidget(
+                                amplitudes: provider.amplitudes,
+                              ),
+                              SizedBox(height: 10.h),
+                              Text(
+                                'Playback Source',
+                                style: Theme.of(context).textTheme.labelLarge,
                               ),
                               SizedBox(height: 6.h),
+                              Wrap(
+                                spacing: 8.w,
+                                children: [
+                                  ChoiceChip(
+                                    label: const Text('Processed'),
+                                    selected:
+                                        provider.playbackSource ==
+                                        PlaybackSource.processed,
+                                    onSelected: isBusy || isRecording
+                                        ? null
+                                        : (_) => provider.setPlaybackSource(
+                                            PlaybackSource.processed,
+                                          ),
+                                  ),
+                                  ChoiceChip(
+                                    label: const Text('Dry'),
+                                    selected:
+                                        provider.playbackSource ==
+                                        PlaybackSource.dry,
+                                    onSelected: isBusy || isRecording
+                                        ? null
+                                        : (_) => provider.setPlaybackSource(
+                                            PlaybackSource.dry,
+                                          ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: 14.h),
+                              SizedBox(
+                                width: double.infinity,
+                                child: FilledButton.icon(
+                                  onPressed: primaryAction,
+                                  icon: Icon(primaryIcon),
+                                  label: Text(primaryLabel),
+                                ),
+                              ),
+                              SizedBox(height: 10.h),
+                              Wrap(
+                                spacing: 8.w,
+                                runSpacing: 8.h,
+                                alignment: WrapAlignment.center,
+                                children: [
+                                  OutlinedButton.icon(
+                                    onPressed: hasRaw
+                                        ? () => provider
+                                              .saveVoiceWithSelectedEffect()
+                                        : null,
+                                    icon: const Icon(Icons.save_rounded),
+                                    label: const Text('Save'),
+                                  ),
+                                  OutlinedButton.icon(
+                                    onPressed: hasRaw
+                                        ? () => provider.shareAudio()
+                                        : null,
+                                    icon: const Icon(Icons.share_rounded),
+                                    label: const Text('Share'),
+                                  ),
+                                  OutlinedButton.icon(
+                                    onPressed: hasRaw ? _resetSession : null,
+                                    icon: const Icon(Icons.refresh_rounded),
+                                    label: const Text('New'),
+                                  ),
+                                ],
+                              ),
                             ],
                           ),
                         ),
                       ),
+                      SizedBox(height: 14.h),
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 16.w),
+                        child: _GlassPanel(
+                          child: Theme(
+                            data: Theme.of(
+                              context,
+                            ).copyWith(dividerColor: Colors.transparent),
+                            child: ExpansionTile(
+                              title: const Text('Advanced EQ & Reverb'),
+                              subtitle: const Text('Manual fine control'),
+                              children: [
+                                _StudioSlider(
+                                  label: 'Bass',
+                                  value: provider.eqBass,
+                                  min: -10,
+                                  max: 10,
+                                  onChanged: isBusy || isRecording
+                                      ? null
+                                      : (v) => provider.setEqBass(v),
+                                ),
+                                _StudioSlider(
+                                  label: 'Mid',
+                                  value: provider.eqMid,
+                                  min: -10,
+                                  max: 10,
+                                  onChanged: isBusy || isRecording
+                                      ? null
+                                      : (v) => provider.setEqMid(v),
+                                ),
+                                _StudioSlider(
+                                  label: 'Treble',
+                                  value: provider.eqTreble,
+                                  min: -10,
+                                  max: 10,
+                                  onChanged: isBusy || isRecording
+                                      ? null
+                                      : (v) => provider.setEqTreble(v),
+                                ),
+                                _StudioSlider(
+                                  label: 'Reverb',
+                                  value: provider.reverb,
+                                  min: 0,
+                                  max: 1,
+                                  onChanged: isBusy || isRecording
+                                      ? null
+                                      : (v) => provider.setReverb(v),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      if (provider.processedVersions.isNotEmpty) ...[
+                        SizedBox(height: 14.h),
+                        _GlassPanel(
+                          child: Theme(
+                            data: Theme.of(
+                              context,
+                            ).copyWith(dividerColor: Colors.transparent),
+                            child: ExpansionTile(
+                              title: const Text('Processed Snapshots'),
+                              subtitle: const Text(
+                                'Jump to previous snapshots',
+                              ),
+                              children: [
+                                Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Wrap(
+                                    spacing: 8.w,
+                                    runSpacing: 8.h,
+                                    children: provider.processedVersions
+                                        .map(
+                                          (version) => ChoiceChip(
+                                            label: Text(version.label),
+                                            selected:
+                                                provider.activeProcessedPath ==
+                                                version.path,
+                                            onSelected: (_) => provider
+                                                .setActiveProcessedVersion(
+                                                  version.path,
+                                                ),
+                                          ),
+                                        )
+                                        .toList(),
+                                  ),
+                                ),
+                                SizedBox(height: 6.h),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
                     ],
-                  ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         );
       },

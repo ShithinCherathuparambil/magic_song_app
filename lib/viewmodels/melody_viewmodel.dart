@@ -83,7 +83,7 @@ class MelodyViewModel extends ChangeNotifier {
   RecordingState _recordingState = RecordingState.idle;
   RecordingState get recordingState => _recordingState;
 
-  VocalPreset _selectedPreset = VocalPreset.warmMelody;
+  VocalPreset _selectedPreset = VocalPreset.clean;
   VocalPreset get selectedPreset => _selectedPreset;
 
   bool _isPlaying = false;
@@ -678,6 +678,7 @@ class MelodyViewModel extends ChangeNotifier {
     _lastProcessedProfileSignature = null;
     _hasUnappliedAudioChanges = false;
     _processedVersions.clear();
+    setPreset(VocalPreset.clean);
     _recordingState = RecordingState.recording;
     _statusText = 'Recording started. Sing your melody line.';
     _startAmplitudePolling();
