@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:magic_song/views/widgets/back_drop.dart';
 import 'package:provider/provider.dart';
 
 import '../viewmodels/splash_viewmodel.dart';
@@ -23,38 +24,47 @@ class _SplashViewState extends State<SplashView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        decoration: const BoxDecoration(color: Color(0xFF003C72)),
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Image.asset('assets/app_icon.png', width: 128.w, height: 128.w),
-              SizedBox(height: 28.h),
-              Text(
-                'Magic Song Studio',
-                style: TextStyle(
-                  fontSize: 30.sp,
-                  fontWeight: FontWeight.w800,
-                  letterSpacing: 0.8,
-                  color: const Color(0xFFFFFFFF),
-                ),
+      body: Stack(
+        children: [
+          Backdrop(),
+          Container(
+            // decoration: const BoxDecoration(color: Color(0xFF003C72)),
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset(
+                    'assets/app_icon.webp',
+                    width: 128.w,
+                    height: 128.w,
+                  ),
+                  SizedBox(height: 28.h),
+                  Text(
+                    'Magic Song Studio',
+                    style: TextStyle(
+                      fontSize: 30.sp,
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: 0.8,
+                      color: const Color(0xFFFFFFFF),
+                    ),
+                  ),
+                  SizedBox(height: 10.h),
+                  Text(
+                    'Shape your voice with cinematic control',
+                    style: TextStyle(
+                      color: const Color(0xFFFFFFFF).withValues(alpha: 0.85),
+                    ),
+                  ),
+                  SizedBox(height: 24.h),
+                  // const CircularProgressIndicator(
+                  //   strokeWidth: 2.5,
+                  //   valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFFD4F00)),
+                  // ),
+                ],
               ),
-              SizedBox(height: 10.h),
-              Text(
-                'Shape your voice with cinematic control',
-                style: TextStyle(
-                  color: const Color(0xFFFFFFFF).withValues(alpha: 0.85),
-                ),
-              ),
-              SizedBox(height: 24.h),
-              // const CircularProgressIndicator(
-              //   strokeWidth: 2.5,
-              //   valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFFD4F00)),
-              // ),
-            ],
+            ),
           ),
-        ),
+        ],
       ),
     );
   }
